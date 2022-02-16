@@ -1,0 +1,17 @@
+.add-menu {
+    position: absolute;
+    right: 25px;
+    bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column-reverse;
+    z-index: 2000;
+    cursor: pointer;
+    transition: right 0.69s ease-in-out 0.01s;
+}
+
+.add-menu.open {
+    transition: right 0.7s ease-in-out;
+    right: 480px;
+}

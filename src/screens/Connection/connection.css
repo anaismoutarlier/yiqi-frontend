@@ -1,0 +1,31 @@
+.facebook_button {
+    background-color: #4267B2;
+    height: 2rem;
+    width: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    border-radius: 3px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 0;
+}
+
+.google_button {
+    height: 2rem;
+    width: 320px;
+    margin-top: 15px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+@media (max-width: 500px) {
+    .facebook_button {
+        width: 260px;
+    }
+    
+    .google_button {
+        width: 260px;
+    }
+}

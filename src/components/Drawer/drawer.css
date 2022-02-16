@@ -1,0 +1,18 @@
+.drawer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 700px;
+    min-height: 40vh;
+    max-height: 60vh;
+    transition: width 0.7s ease-in-out;
+    background-color: white;
+    width: 0;
+    overflow-x: hidden;
+    z-index: 500;
+    box-shadow: 2px 2px 7px 5px rgba(0, 0, 0, 0.1);
+}
+
+.drawer.open {
+    width: 500px;
+}

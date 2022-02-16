@@ -1,0 +1,7 @@
+.pin {
+    border-radius: 2px 2px 20px 2px;
+}
+
+.pin.open {
+    border-radius: 2px 2px 0px 0px;
+}
