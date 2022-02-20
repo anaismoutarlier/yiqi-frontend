@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import env from "react-dotenv";
 
 //REDUX__________________________
 import { Provider } from 'react-redux'
@@ -21,13 +20,13 @@ import circles from './reducers/circles.reducer'
 import socketIOClient from 'socket.io-client'
 
 //ENVIRONMENT CONFIG________________________
-global.BACKEND = 'https://yiqi-test.herokuapp.com'
+global.BACKEND = 'https://yiqi-backend-test.herokuapp.com'
 
 if (process.env.REACT_APP_ENV === "development") {
   global.BACKEND = 'http://localhost:3000'
 }
 
-global.SOCKET_URI = "http://192.168.0.11:3000"
+global.SOCKET_URI = 'https://yiqi-backend-test.herokuapp.com'
 
 global.SOCKET = socketIOClient(global.SOCKET_URI, {
   reconnection: true,

@@ -1,9 +1,9 @@
 /* eslint-disable import/no-anonymous-default-export */
-export default (user = null, action) => {
+export default (user = false, action) => {
     if (action.type === 'loginUser' || action.type === 'modifyUser') {
         return action.user
     } else if (action.type === 'logoutUser') {
-        return null
+        return false
     } else {
         return user
     }

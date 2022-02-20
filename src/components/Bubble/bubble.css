@@ -11,4 +11,5 @@
 
 .bubble.open {
     height: 200px;
+    outline: none;
 }

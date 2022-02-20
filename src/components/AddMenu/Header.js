@@ -1,8 +1,7 @@
 import { useContext } from "react"
 
 //STYLES_______________________
-import defaultstyles from "../../defaultstyles"
-import modalstyles from './AddMenuModals/modalstyles'
+import { defaultstyles, modalstyles } from "../../styles"
 
 //UI_____________________________
 import { mdiPinOutline } from '@mdi/js';

@@ -1,7 +1,7 @@
-import React, { useState, useContext } from 'react'
+import { useState, useContext } from 'react'
 
 //STYLES_______________________________
-import defaultstyles from '../../defaultstyles'
+import { defaultstyles } from '../../styles'
 import './nav.css'
 
 //HELPER FUNCTIONS___________________
@@ -14,190 +14,151 @@ import { ThemeContext, themes } from '../../hooks/theme-context'
 import { Link } from 'react-router-dom'
 
 //REDUX___________________________
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 //UI_____________________
 import Icon from '@mdi/react'
 import {
     mdiHomeOutline,
     mdiFormatPaint,
-    mdiDotsHorizontalCircleOutline,
-    mdiViewDashboardOutline,
     mdiNewspaper,
     mdiLocationExit
 } from '@mdi/js'
 
 //COMPONENTS_________________
 import Tooltip from './Tooltip'
-import IconSlider from '../IconSlider'
-import ModifyBackground from '../ModifyBackground'
+import Slider from '../Slider'
 
 //COOKIES_____________________
 import Cookie from 'universal-cookie'
 
 const cookies = new Cookie()
 
-const Nav = ({ page, user, modifyUser, isLogged, logoutUser }) => {
+export default function Nav() {
     //CONTEXT___________________
     const { theme, changeTheme } = useContext(ThemeContext)
 
-    //STATE HOOKS______________
-    const [menuOpen, setMenuOpen] = useState(false)
-    const [logoutMenuOpen, setLogoutMenuOpen] = useState(false)
+    //STORE_______________________
+    const user = useSelector(({ user }) => user)
+    const dispatch = useDispatch()
 
-    const [modalVisible, setModalVisible] = useState(false)
+    //STATE_______________________
+    const [colorMenuOpen, setColorMenuOpen] = useState(false)
+    const [userMenuOpen, setUserMenuOpen] = useState(false)
 
-    //FUNCTIONS______________________
-    const openMenu = () => {
-        setMenuOpen(true)
-    }
-
-    const closeMenuDelay = () => {
-        setTimeout(() => setMenuOpen(false), 20000)
-    }
-
-    const closeMenu = () => {
-        setMenuOpen(false)
-    }
-
-    const toggleModal = () => {
-        setModalVisible(!modalVisible)
-    }
-
-    const openLogoutMenu = () => {
-        setLogoutMenuOpen(true)
-    }
-
-    const closeLogoutMenuDelay = () => {
-        setTimeout(()=>setLogoutMenuOpen(false), 5000 )
-    }
-
+    //FUNCTIONS____________________
     const logout = () => {
         cookies.remove('token')
-        logoutUser(false)
+        dispatch({ type: "logoutUser" })
+    }
+    
+    const openColorMenu = () => setColorMenuOpen(true)
+
+    const closeColorMenu = delay => setTimeout(() => setColorMenuOpen(false), delay)
+
+    const openUserMenu = () => setUserMenuOpen(true)
+
+    const closeUserMenu = delay => setTimeout(() => setUserMenuOpen(false), delay)
+
+    const handleThemeChange = theme => {
+        changeTheme(theme)
+        closeColorMenu()
     }
 
+    const { subtitle } = defaultstyles
+    const { avatar_container, avatar, bottom_menu, logout_tooltip, nav_container, logo_container, menu_container, menu_wrapper, tooltip_container, color_menu, color_option } = styles
+    
     return (
-        <div className="transition-color" style={combineStyles(styles.nav_container, theme.background)}>
-            <div style={styles.logo_container}>
+        <div className="transition-color" style={ combineStyles(nav_container, theme.background) }>
+            <div style={ logo_container }>
                 YIQI
             </div>
-            <div style={styles.menu_container}>
-                <div style={ styles.menu_wrapper }>
-                    <Link to={ user ? `/board/user/${user.token}`: "#" } style={{ color: 'white' }}>
-                        <IconSlider name="Mon Board">
-                            <Icon
-                                path={mdiViewDashboardOutline}
-                                size={0.8}
-                                color="white"
-                            />
-                        </IconSlider>
-                    </Link>
+            <div style={ menu_container }>
+                <div style={ menu_wrapper }>
                     <Link to="/">
-                        <IconSlider name="Recent">
+                        <Slider name="Home" color={ theme.background.backgroundColor }>
                             <Icon
-                                path={mdiNewspaper}
-                                size={0.8}
+                                path={ mdiNewspaper }
+                                size={0.6}
                                 color="white"
                             />
-                        </IconSlider>
+                        </Slider>
                     </Link>
-                    <Link to="/compte">
-                        <IconSlider name="Dashboard">
+                    <Link to="/account">
+                        <Slider name="Dashboard" color={ theme.background.backgroundColor }>
                             <Icon
-                                path={mdiHomeOutline}
-                                size={0.9}
+                                path={ mdiHomeOutline }
+                                size={0.7}
                                 color="white"
                             />
-                        </IconSlider>
+                        </Slider>
                     </Link>
-                </div>
-                <div style={ styles.bottom_menu }>
-                    <Tooltip
-                        type="menu"
-                        menuOpen={ menuOpen }
-                        openMenu={ openMenu }
-                        closeMenuDelay={ closeMenuDelay }
-                        content={
-                            <div style={ styles.tooltip_container }>
-                                <div style={styles.color_menu}>
-                                { Object.values(themes).map((e, i) => 
-                                <div
-                                    key={ i }
-                                    style={ theme.name === e.name ? combineStyles(styles.color_option, themes[e.name].background, { border: '3px solid yellow' }) : combineStyles(styles.color_option, themes[e.name].background) }
-                                    onClick={ () => { changeTheme(e.name, 'update'); closeMenu(); } }
-                                />
-                                ) }
-                                </div>
-                                { page === 'board' &&
-                                    <button style={ styles.menu_button } onClick={ ()=>toggleModal() }>
-                                        <Icon
-                                            path={ mdiDotsHorizontalCircleOutline }
-                                            size={ 1 }
-                                            color="#343a40"
-                                        />
-                                    </button>
-                                }
-                            </div>
-                        }
-                    >
-                        <Icon
-                            path={mdiFormatPaint}
-                            size={ 0.7 }
-                            color="white"
-                            style={{cursor: 'pointer'}}
-                        />
-                    </Tooltip>
-                    { isLogged &&
-                        <Tooltip
-                        type="menu"
-                        menuOpen={ logoutMenuOpen }
-                        openMenu={ openLogoutMenu }
-                        closeMenuDelay={ closeLogoutMenuDelay }
-                        content={
-                            <div style={ styles.logout_tooltip } onClick={ ()=>logout() }>
-                                <Icon
-                                path={ mdiLocationExit }
-                                size={ 0.8 }
-                                color={ theme.foreground.color }
-                                style={ { marginRight: 3 } }
-                                />
-                                <p style={ combineStyles(defaultstyles.subtitle, theme.foreground) }>Déconnexion</p>
-                            </div>
-                        }
-                        >
-                            <div style={ styles.avatar_container }>
-                                <img src={ user?.avatar ? user.avatar : '' } alt={ user?.username ? user.username : 'avatar' } style={ styles.avatar }/>
-                            </div>
-                        </Tooltip>
-                    }
                 </div>
             </div>
-                <ModifyBackground open={ modalVisible } toggleModal={ toggleModal } mode="board" />
+            <div style={ bottom_menu }>
+                <Tooltip
+                    type="menu"
+                    menuOpen={ colorMenuOpen }
+                    openMenu={ openColorMenu }
+                    closeMenuDelay={ () => closeColorMenu(2000) }
+                    content={
+                        <div style={ tooltip_container }>
+                            <div style={ color_menu }>
+                            { Object.values(themes).map((e, i) => 
+                            <div
+                                key={ e.name }
+                                style={ theme.name === e.name ? combineStyles(color_option, themes[e.name].background, { border: '3px solid yellow' }) : combineStyles(color_option, themes[e.name].background) }
+                                onClick={ () => handleThemeChange(e.name) }
+                            />
+                            ) }
+                            </div>
+                            {/* { page === 'board' &&
+                                <button style={ menu_button }>
+                                    <Icon
+                                        path={ mdiDotsHorizontalCircleOutline }
+                                        size={ 1 }
+                                        color="#343a40"
+                                    />
+                                </button>
+                            } */}
+                        </div>
+                    }
+                >
+                    <Icon
+                        path={mdiFormatPaint}
+                        size={ 0.7 }
+                        color="white"
+                        style={{cursor: 'pointer'}}
+                    />
+                </Tooltip>
+                { user &&
+                    <Tooltip
+                    type="menu"
+                    menuOpen={ userMenuOpen }
+                    openMenu={ openUserMenu }
+                    closeMenuDelay={ () => closeUserMenu(2000) }
+                    content={
+                        <div style={ logout_tooltip } onClick={ ()=>logout() }>
+                            <Icon
+                            path={ mdiLocationExit }
+                            size={ 0.8 }
+                            color={ theme.foreground.color }
+                            style={ { marginRight: 3 } }
+                            />
+                            <p style={ combineStyles(subtitle, theme.foreground) }>Déconnexion</p>
+                        </div>
+                    }
+                    >
+                        <div style={ avatar_container }>
+                            <img src={ user?.avatar || '' } alt={ user?.username || 'avatar' } style={ avatar }/>
+                        </div>
+                    </Tooltip>
+                }
+            </div>
         </div>
     )
 }
 
-function mapStateToProps({ user, isLogged }) {
-    return {
-        user,
-        isLogged
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        modifyUser: user => {
-            dispatch({ type: 'modifyUser', user })
-        },
-        logoutUser: bool => {
-            dispatch({ type: 'logoutUser' })
-            dispatch({ type: 'setIsLogged', isLogged: bool })
-        }
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Nav)
 
 const styles = {
     nav_container: {
@@ -205,16 +166,17 @@ const styles = {
         gridTemplateRows: '60px 1fr',
         height: '100vh',
         boxShadow: '1px 3px 5px 1px rgba(0, 0 , 0, 0.4)',
-        zIndex: 6000
+        zIndex: 6000,
+        boxSizing: "border-box"
     },
     logo_container: {
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: "center",
         color: '#ffffff',
         width: '100%',
         fontWeight: 'bold',
-        fontSize: "1.4rem"
+        fontSize: "1.1rem"
     },
     menu_container: {
         display: 'flex',
@@ -253,21 +215,13 @@ const styles = {
         cursor: 'pointer',
         boxSizing: 'border-box'
     },
-    menu_button: {
-        border: 'none',
-        background: 'transparent',
-        cursor: 'pointer',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
     avatar_container: {
-        height: '35px',
-        width: '35px',
+        height: '20px',
+        width: '20px',
         borderRadius: '50%',
         boxShadow: '1px 3px 5px 1px rgba(0, 0 , 0, 0.4)',
         overflow: 'hidden',
-        cursor: 'pointer'
+        cursor: 'pointer',
     },
     avatar: {
         objectFit: 'fill',
@@ -275,7 +229,7 @@ const styles = {
         width: '100%'
     },
     bottom_menu: {
-        paddingBottom: '20px',
+        paddingBottom: '10px',
         height: '75px',
         display: 'flex',
         flexDirection: 'column',

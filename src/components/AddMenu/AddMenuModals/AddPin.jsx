@@ -1,8 +1,7 @@
 import React, { useState, useContext } from 'react'
 
 //STYLES_________________________
-import defaultstyles from '../../../defaultstyles'
-import modalstyles from './modalstyles'
+import { defaultstyles, modalstyles } from '../../../styles'
 import '../../../App.css'
 
 //COMPONENTS____________________

@@ -54,28 +54,6 @@ const AddMenu = () => {
     const [selected, setSelected] = useState(null)
     const [modalVisible, setModalVisible] = useState(false)
     
-    
-    //modal Circle
-    const [currentIntitule, setCurrentIntitule] = useState('')
-    const [currentParent, setCurrentParent] = useState('')
-    const [currentOrientation, setCurrentOrientation] = useState('')
-    const [currentEmail, setCurrentEmail] = useState('')
-
-    useEffect(()=>{console.log(currentIntitule, currentParent, currentOrientation)}, [currentIntitule, currentParent, currentOrientation])
-    useEffect(()=>{console.log(currentIntitule, currentParent, currentOrientation)}, [currentIntitule, currentParent, currentOrientation])
-    
-    const resetModalCircle = () => {
-        setCurrentOrientation('')
-        setCurrentParent('')
-        setCurrentIntitule('')
-    }
-
-    //modal People
-
-    const resetPeopleCircle = () => {
-        setCurrentEmail('')
-    }
-
     let timeout;
 
     //FUNCTIONS_______________________

@@ -1,0 +1,19 @@
+.sider {
+    position: relative;
+    box-shadow: 1px 3px 5px 1px rgba(0, 0 , 0, 0.4);
+    height: 100%;
+    max-height: 100%;
+    transition: width 1s ease-in-out, padding 0s linear 0.9s;
+    width: 1.9rem;
+    padding-left: 1.9rem;
+    overflow-x: hidden;
+    z-index: 1000;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.sider.open {
+    width: 300px;
+    padding-left: 0;
+    transition: width 1s ease-in-out;
+}

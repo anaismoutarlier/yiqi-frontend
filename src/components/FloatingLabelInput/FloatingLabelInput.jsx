@@ -4,7 +4,7 @@ import './floatinginputlabel.css'
 //HELPER FUNCTIONS________________________
 import combineStyles from '../../helpers/combineStyles'
 
-const FloatingLabelInput = ({ style, name, label, onChange, type, onKeyDown, value, isFocused, height, width }) => {
+const FloatingLabelInput = ({ name, label, value, style, isFocused, onChange, ...props }) => {
     //REFERENCE HOOKS_____________________
     const input = useRef()
 
@@ -15,48 +15,31 @@ const FloatingLabelInput = ({ style, name, label, onChange, type, onKeyDown, val
         }
     }, [isFocused])
 
-    return type === "text" || type === 'password' ? 
-        (
-        <div className="floating-input-container" style={ styles.container }> 
+    //FUNCTIONS_____________________________
+    const handleChange = e => onChange ? onChange(e.target.name, e.target.value) : console.log(value)
+
+    const { container, input: inputStyle, filler } = styles
+    return (
+        <div className="floating-input-container" style={ container }> 
             <input
             name={ name }
             ref={ input }
-            style={ combineStyles(styles.input, style) }
-            value={ value }
-            type={ type }
-            onKeyDown={ onKeyDown ? onKeyDown : null }
-            onChange={ (e)=>onChange(e.target.value, e.target.name) } />
+            value={ value || "" }
+            style={ combineStyles(inputStyle, style) }
+            onChange={ (e) => handleChange(e) }
+            { ...props }
+            />
             <label
             htmlFor={ name }
             className={ value && 'filled' }>
-                <span style={ styles.filler }></span>
+                <span style={ filler }></span>
                 { label }
-                <span style={ styles.filler }></span>
+                <span style={ filler }></span>
             </label>
         </div>
     )
-    : type === "text-area" ?
-    (   
-        <div className="floating-input-container" style={ styles.container }>
-            <textarea
-            name={ name }
-            ref={ input }
-            style={ combineStyles(styles.input, { height: height ? height : '7rem', width: width ? width : '100%' }) }
-            value={ value }
-            onKeyDown={ onKeyDown ? onKeyDown : null }
-            onChange={ (e)=>onChange(e.target.value, e.target.name) } />
-            <label
-            htmlFor={ name }
-            className={ value && 'filled' }>
-                <span style={ styles.filler }></span>
-                { label }
-                <span style={ styles.filler }></span>            
-            </label>
-        </div>
-        
-    ) 
-    : null;
 }
+
 export default FloatingLabelInput;
 
 const styles = {

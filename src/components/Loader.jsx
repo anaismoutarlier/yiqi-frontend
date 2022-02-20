@@ -1,20 +1,27 @@
-import React, { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 
 //CONTEXT_______________________
-import { themes } from '../hooks/theme-context'
+import { ThemeContext } from '../hooks/theme-context'
 
 //NAVIGATION_________________________
 import { Redirect } from 'react-router-dom'
 
 //REDUX______________________________
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 //COOKIES_______________________________
 import Cookie from 'universal-cookie'
 
 const cookies = new Cookie()
 
-function Loader({ loginUser, isLogged, changeTheme }) {
+function Loader() {
+    //CONTEXT_______________________
+    const { changeTheme } = useContext(ThemeContext)
+
+    //STORE__________________________
+    const user = useSelector(({ user }) => user)
+    const dispatch = useDispatch()
+
     //EFFECT HOOKS______________________
     useEffect(() => {
         const fetchUser = async () => {
@@ -29,7 +36,6 @@ function Loader({ loginUser, isLogged, changeTheme }) {
 
             if (result) {
                 loginUser(user, true, circle, circles)
-
                 changeTheme(user.preferences.theme)
             }
         }
@@ -40,25 +46,17 @@ function Loader({ loginUser, isLogged, changeTheme }) {
         }
     }, [])
 
-    return isLogged ? 
+
+    //FUNCTIONS________________________
+    const loginUser = (user, bool, circle, circles) => {
+        dispatch({ type: 'loginUser', user })
+        dispatch({ type: 'setIsLogged', isLogged: bool })
+        dispatch({ type: 'setUserCircle', circle })
+        dispatch({ type: "setCircleList", circles })
+    }
+
+    return user ? 
     <Redirect to="/" /> : <></>
 }
 
-function mapStateToProps(state) {
-    return {
-        isLogged: state.isLogged
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        loginUser: (user, bool, circle, circles) => {
-            dispatch({ type: 'loginUser', user })
-            dispatch({ type: 'setIsLogged', isLogged: bool })
-            dispatch({ type: 'setUserCircle', circle })
-            dispatch({ type: "setCircleList", circles })
-        }
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Loader)
+export default Loader
