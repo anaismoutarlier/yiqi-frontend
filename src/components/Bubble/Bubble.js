@@ -36,7 +36,7 @@ const Bubble = ({ id, open, handleClose, height = null, style = null, pinSize, i
 
     //FUNCTIONS______________________________
     const handleBlur = () => {
-        // handleClose()
+        handleClose()
     }
 
     const toggleTransfer = () => setTransfer(!transfer)

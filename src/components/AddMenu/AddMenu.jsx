@@ -46,7 +46,7 @@ export const Option = ({ content, icon, type, iconRotate, onClick }) => {
 }
 
 const AddMenu = () => {
-    const { media } = useContext(MediaContext)
+    const media = useContext(MediaContext)
 
     //STATE HOOKS_____________________
     const [menuOpen, setMenuOpen] = useState(false)

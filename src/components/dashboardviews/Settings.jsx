@@ -26,7 +26,7 @@ const Settings = () => {
 
     //CONTEXT_______________________
     const { theme, changeTheme } = useContext(ThemeContext)
-    const { media } = useContext(MediaContext)
+    const media = useContext(MediaContext)
 
     //STATE HOOKS______________________
     const [user, setUser] = useState({
