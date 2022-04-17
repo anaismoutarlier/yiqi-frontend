@@ -24,7 +24,7 @@ export default function Pin({ pin, preview = false, index }) {
     //STATE_________________________
     const [pinClass, setPinClass] = useState("pin")
     const [pinSize, setPinSize] = useState({ height: 130, width: 250 })
-    const [bubbleOpen, setBubbleOpen] = useState(index === 4)
+    const [bubbleOpen, setBubbleOpen] = useState(false)
 
     //EFFECTS______________________
         useEffect(() => {

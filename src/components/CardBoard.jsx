@@ -50,7 +50,7 @@ const CardBoard = ({ board, displayCircle = false, item, favorite }) => {
     const { subtitle } = defaultstyles
 
     return isSelected 
-    ? <Redirect to={ `/board/public/${board._id}` } /> 
+    ? <Redirect to={ `/board/${board._id}` } /> 
     : (
         <div
         id="background"
