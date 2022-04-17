@@ -175,7 +175,7 @@ useEffect(()=>{
                     <ThemeContext.Consumer>
                         {({ theme }) =>
                         <>
-                            <div className="list-container" id='list-container' style={{ maxHeight: '78%', height: '78%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', boxSizing: 'border-box', paddingTop: 20 }}>
+                            <div className="list-container" id='list-container' style={{ overflowY: 'overlay', maxHeight: '100%', height: '100%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', boxSizing: 'border-box', paddingTop: 20 }}>
 
 {/* People list on the left side */}
                                 <div id="people-list" className={`hide-scrollbar sides${(currentSelectionCircle || currentSelectionPeople) ? '-open' : ''}`} style={combineStyles(theme.foreground, styles.sideContainer)}>
@@ -184,7 +184,7 @@ useEffect(()=>{
                                         <Select
                                             values={clients.map(client => ({ value: client, label: client.name }))}
                                             handleChange={(e) => { setClientSelected(e.value) }}
-                                            placeholder={clientSelected && `Organisation : ${clientSelected.name}`}
+                                            placeholder={clientSelected && `${clientSelected.name}`}
                                             name="clientselect"
                                             style={{ width: '55%', margin: 10 }}
                                             closable={false}
@@ -236,7 +236,7 @@ useEffect(()=>{
                     {/* list IN */}          
                                 <div className={`center${(currentSelectionCircle || currentSelectionPeople) ? '-open' : ''}`} style={combineStyles(theme.background, styles.centerContainer, {justifyContent: 'flex-start', overflow: 'hidden', height: 'calc(100% - 85px)'})}>
                                     <h4 style={{margin: 5, color: '#fff'}}>Inclus</h4>
-                                    <div className="hide-scrollbar" style={{overflowY: 'scroll', borderRadius: 3, width: '90%', height: '90%', margin: '0px 20px 20px 20px', backgroundColor: '#fff', color: '#333'}}>
+                                    <div className="hide-scrollbar" style={{overflowY: 'scroll', borderRadius: 3, width: '90%', height: '100%', maxHeight: '90%', margin: '0px 20px 20px 20px', backgroundColor: '#fff', color: '#333'}}>
                                         {currentSelectionCircle && 
                                                 
                                                 tabCirclePeople.length > 0 &&
@@ -264,7 +264,7 @@ useEffect(()=>{
                                 </div>
                     {/* MENU */}
                     <div style={{alignSelf: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center'}}>
-                        <h3 style={(currentSelectionCircle || currentSelectionPeople) && combineStyles(theme.foreground,{textAlign: 'center', width: '25%', padding: '0px 10px 10px 10px', marginTop:0, borderBottom: '1px solid rgba(0,0,0,0.2)', color: '#343a40', position: 'absolute', top: '13.5%', overflow: 'visible'})}>
+                        <h3 style={(currentSelectionCircle || currentSelectionPeople) && combineStyles(theme.foreground,{textAlign: 'center', width: '25%', padding: '0px 10px 10px 10px', marginTop:0, borderBottom: '1px solid rgba(0,0,0,0.2)', color: '#343a40', position: 'absolute', top: '24%', overflow: 'visible'})}>
                             {currentSelectionCircle && currentSelectionCircle.name}{currentSelectionPeople && currentSelectionPeople.username}
                         </h3>
 
@@ -346,7 +346,7 @@ useEffect(()=>{
                                         <Select
                                             values={architectures.map(architecture => ({ value: architecture, label: architecture.name }))}
                                             handleChange={(e) => { setArchiSelected(e.value); console.log(e) }}
-                                            placeholder={archiSelected && `Architecture : ${archiSelected.name}`}
+                                            placeholder={archiSelected && `${archiSelected.name}`}
                                             name="clientselect"
                                             style={{ width: '55%', margin: 10 }}
                                             closable={false}
