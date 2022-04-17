@@ -84,6 +84,15 @@ export default function Nav() {
                             />
                         </Slider>
                     </Link>
+                    <Link to="/myboard">
+                        <Slider name="Mon Board" color={ theme.background.backgroundColor }>
+                            <Icon
+                                path={ mdiNewspaper }
+                                size={0.6}
+                                color="white"
+                            />
+                        </Slider>
+                    </Link>
                     <Link to="/compte">
                         <Slider name="Compte" color={ theme.background.backgroundColor }>
                             <Icon

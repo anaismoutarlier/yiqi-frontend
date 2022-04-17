@@ -129,8 +129,7 @@ const styles = {
     wrapper: {
         height:'100%',
         maxHeight: '100%',
-        backgroundColor: "rgba(255, 255, 255, 0.8)",
-        margin: "50px 30px 30px 30px",
-        boxSizing: "border-box"
+        margin: "30px",
+        boxSizing: "border-box",
     }
 }

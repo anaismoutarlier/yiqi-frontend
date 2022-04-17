@@ -50,9 +50,7 @@ const AddPin = ({ toggleModal, boards, user }) => {
     const [step, setStep] = useState(1)
 
     //FUNCTIONS_________________________
-    const handlePinModification = (value, name) => {
-        setPin(Object.assign({ ...pin }, { [name]: value }))
-    }
+    const handlePinModification = (name, value) => setPin(Object.assign({ ...pin }, { [name]: value }))
 
     const handleResponseMethodSelect = (e, onValue, offValue) => {
         if (e.target.checked) {
@@ -63,11 +61,13 @@ const AddPin = ({ toggleModal, boards, user }) => {
     }
 
     const handleSelectBoards = (data, name) => {
-        pin.boards.find(e => e === data.value) ? handlePinModification(pin.boards.filter(e => e !== data.value), name) : handlePinModification([ ...pin.boards, data.value ], 'boards')
+        console.log({data, name})
+        console.log(pin.boards)
+        pin.boards.find(e => e === data.value) ? handlePinModification(name, pin.boards.filter(e => e !== data.value)) : handlePinModification(name, [ ...pin.boards, data.value ])
     }
 
     const handleToggle = (e, onValue, offValue, name) => {
-        handlePinModification(e.target.checked, name)
+        handlePinModification(name, e.target.checked)
     }
 
     const handleSetDelay = (value, type) => {
@@ -104,7 +104,7 @@ const AddPin = ({ toggleModal, boards, user }) => {
                     <div style={ modalstyles.field }>
                         <h6 style={ modalstyles.modal_heading }>Partager avec . . .</h6>
                         <Select 
-                        values={ boards.map(e => { return { value: e._id, label: e.name } }) } 
+                        values={ boards.map(e => ({ value: e._id, label: e.name })) } 
                         handleChange={ handleSelectBoards } 
                         placeholder="Sélectionner un ou plusieurs boards"
                         name="boards"

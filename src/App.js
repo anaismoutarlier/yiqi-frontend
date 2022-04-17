@@ -17,6 +17,7 @@ import Home from "./screens/Home"
 import Connection from './screens/Connection'
 import Board from "./screens/Board"
 import Account from "./screens/Account"
+import MyBoard from "./screens/MyBoard"
 
 //COMPONENTS_________________
 import Loader from "./components/Loader"
@@ -70,6 +71,7 @@ const App = () => {
           <Switch>
             <Route path="/" exact component={ Connection } />
             <Route path="/home" exact component={ Home } />
+            <Route path="/myboard" exact component={ MyBoard } />
             <Route path="/board/:id" exact component={ Board }/>
             <Route path="/compte" exact component={ Account } />
           </Switch>

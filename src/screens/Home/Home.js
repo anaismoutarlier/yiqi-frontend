@@ -82,8 +82,6 @@ const Home = () => {
 
     const { container } = styles
     const { mobile_nav_page, nav_page, subtitle, menu_header } = defaultstyles
-
-    const background = combineStyles(container, { background: `url(${user?.preferences?.background})`, backgroundPosition: "cover" })
     
     return (
         <div style={ media === "desktop" ? nav_page : mobile_nav_page }>
@@ -92,10 +90,8 @@ const Home = () => {
                 ? <Nav />
                 : <MobileNav />
             }
-            {/* <AddMenu /> */}
-            <ViewMenu setView={ toggleView } />
             <AddMenu />
-            <div style={ background }>
+            <div style={ container }>
                 <Sider>
                     <div style={ combineStyles(menu_header, { borderBottom: `1px solid ${theme.foreground.color}`}) }>
                         <Icon
@@ -107,13 +103,7 @@ const Home = () => {
                         <h2 style={ combineStyles(subtitle, theme.foreground) }><span>{ time > 7 && time < 17 ? "Bonjour" : "Bonsoir" }</span>, Anaïs!</h2>
                     </div>
                 </Sider>
-                { 
-                    view === "myBoard" 
-                    ? <MyBoard />
-                    : view === "allBoards"
-                    ? <Boards />
-                    : null
-                }
+                <Boards />
             </div>
         </div>
     )
@@ -127,6 +117,7 @@ const styles = {
         boxSizing: 'border-box',
         height: '100%',
         maxHeight: '100%',
-        gridTemplateColumns: 'auto 1fr'
+        gridTemplateColumns: 'auto 1fr',
+        backgroundColor: "#F3F5F7"
     },
 }
