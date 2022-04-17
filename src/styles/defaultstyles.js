@@ -3,6 +3,7 @@ const defaultstyles = {
         display: "grid",
         gridTemplateColumns: '50px 1fr',
         height: '100vh',
+        maxHeight: '100vh',
         width: '100vw',
         position: "relative"
     },
@@ -10,6 +11,7 @@ const defaultstyles = {
         display: "grid",
         gridTemplateRows: '35px 1fr',
         height: '100vh',
+        maxHeight: '100vh',
         width: '100vw',
         position: "relative"
     },
@@ -22,7 +24,7 @@ const defaultstyles = {
         color: '#fff',
         height: '2rem',
         padding: 10,
-        boxShadow: '1px 1px 3px 1px rgba(0, 0, 0, 0.3)',
+        // boxShadow: '1px 1px 3px 1px rgba(0, 0, 0, 0.3)',
         borderRadius: '3px',
         display: 'flex',
         alignItems: 'center',

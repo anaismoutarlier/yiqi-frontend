@@ -15,6 +15,7 @@ import isLogged from './reducers/isLogged.reducer'
 import boards from './reducers/boards.reducer'
 import userCircle from './reducers/userCircle.reducer'
 import circles from './reducers/circles.reducer'
+import mask from './reducers/mask.reducer'
 
 //WEBSOCKETS______________________________
 import socketIOClient from 'socket.io-client'
@@ -35,7 +36,7 @@ global.SOCKET = socketIOClient(global.SOCKET_URI, {
   reconnectionAttempts: Infinity
 } );
 
-const store = createStore(combineReducers({ user, isLogged, boards, userCircle, circles }), /* preloadedState, */ devToolsEnhancer({}))
+const store = createStore(combineReducers({ user, isLogged, boards, userCircle, circles, mask }), /* preloadedState, */ devToolsEnhancer({}))
 
 ReactDOM.render(
   <React.StrictMode>

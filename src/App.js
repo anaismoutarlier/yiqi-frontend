@@ -15,8 +15,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 //SCREENS____________________
 import Home from "./screens/Home"
 import Connection from './screens/Connection'
-// import Board from "./screens/Board"
-// import Dashboard from "./screens/Dashboard"
+import Board from "./screens/Board"
+import Account from "./screens/Account"
 
 //COMPONENTS_________________
 import Loader from "./components/Loader"
@@ -31,9 +31,9 @@ const App = () => {
   const tablet = useMediaQuery({ query: `(max-width: 1000px)`})
 
   //STORE_______________________
-  const user = useSelector(({ user }) => user)
+  const { user, mask } = useSelector(({ user, mask }) => ({ user, mask }))
   const dispatch = useDispatch()
-
+  console.log(mask)
   //STATE______________________
   const [theme, setTheme] = useState(themes[user?.preferences?.theme] || themes["light_blue"])
   const [media, setMedia] = useState(mobile ? "mobile" : tablet ? "tablet" : "desktop")
@@ -60,16 +60,18 @@ const App = () => {
     setTheme(themes[theme])
   }
 
+  const { mask_background } = styles
   return (
     <MediaContext.Provider value={ media }>
       <ThemeContext.Provider value={ { theme, changeTheme } }>
         <Router>
+          { mask && <div style={ mask_background }></div> }
           <Loader />
           <Switch>
             <Route path="/" exact component={ Connection } />
             <Route path="/home" exact component={ Home } />
-            {/* <Route path="/board/:id" exact render={ props => <Board />} />
-            <Route path="/account" exact component={ Dashboard } /> */}
+            <Route path="/board/:id" exact component={ Board }/>
+            <Route path="/compte" exact component={ Account } />
           </Switch>
         </Router>
       </ThemeContext.Provider>
@@ -78,3 +80,15 @@ const App = () => {
 }
 
 export default App
+
+const styles = {
+  mask_background: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    zIndex: 10000,
+    backgroundColor: "rgba(0, 0, 0, 0.8)"
+  }
+}

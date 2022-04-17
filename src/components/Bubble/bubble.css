@@ -1,15 +1,34 @@
+.anchor {
+    position: relative;
+    height: 0;
+    z-index: 10500;
+    overflow: hidden;
+}
+
+.anchor.open {
+    overflow: visible;
+}
+
 .bubble {
     position: absolute;
-    top: calc(100% + 5px);
-    left: 0;
+    top: -35px;
+    left: -70px;
     background-color: white;
-    transition: height 0.5s ease-in-out;
     width: 100%;
     height: 0;
-    overflow-y: hidden;
+    z-index: inherit;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    box-sizing: border-box;
+    display: flex;
+    /* overflow-y: hidden; */
 }
 
 .bubble.open {
     height: 200px;
     outline: none;
+    padding: 10px;
 }
+

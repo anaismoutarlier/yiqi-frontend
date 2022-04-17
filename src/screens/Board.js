@@ -4,11 +4,11 @@ import { useContext, useState, useEffect } from 'react'
 import { defaultstyles } from "../styles"
 
 //HELPER FUNCTIONS___________________
-import combineStyles from '../../helpers/combineStyles'
+import combineStyles from '../helpers/combineStyles'
 
 //CONTEXT_______________________
-import { ThemeContext } from '../../hooks/theme-context'
-import { MediaContext } from '../../hooks/media-context'
+import { ThemeContext } from '../hooks/theme-context'
+import { MediaContext } from '../hooks/media-context'
 
 //NAVIGATION____________________
 import { useParams } from 'react-router-dom';
@@ -20,10 +20,10 @@ import { useSelector, useDispatch } from "react-redux"
 import { joinBoard, joinAll, leaveBoard, leaveAll } from '../sockets'
 
 //COMPONENTS___________________
-import Nav from "../../components/Nav"
-import MobileNav from '../../components/MobileNav'
-import Pin from '../../components/Pin'
-import Sider from "../../components/Sider"
+import Nav from "../components/Nav"
+import MobileNav from '../components/MobileNav'
+import Pin from '../components/Pin'
+import Sider from "../components/Sider"
 
 export default function Board() {
     //CONTEXT__________________

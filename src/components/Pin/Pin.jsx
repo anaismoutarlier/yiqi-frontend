@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useRef, useEffect } from 'react'
 import "./pin.css"
 
 //HELPER FUNCTIONS__________________
@@ -13,58 +13,65 @@ import Bubble from "../Bubble"
 
 const colors = ["#FFEBEB", "#FFEDD6", "#FEFFEB", "#EEFFEB", "#EBFDFF", "#EBF2FF", "#DCD6FF", "#FFEBFF", '#FFFFFC']
 
-export default function Pin({ pin, preview = false }) {
+export default function Pin({ pin, preview = false, index }) {
     //CONTEXT_______________________
     const { theme } = useContext(ThemeContext)
     const media = useContext(MediaContext)
 
+    //REF____________________________________
+    const pinRef = useRef(null)
+
     //STATE_________________________
     const [pinClass, setPinClass] = useState("pin")
-    const [bubbleOpen, setBubbleOpen] = useState(false)
+    const [pinSize, setPinSize] = useState({ height: 130, width: 250 })
+    const [bubbleOpen, setBubbleOpen] = useState(index === 4)
+
+    //EFFECTS______________________
+        useEffect(() => {
+        if (pinRef) {
+            setPinSize({ height: pinRef.current.offsetHeight, width: pinRef.current.offsetWidth })
+        }
+    }, [pinRef])
+
 
     //FUNCTIONS____________________
-    const toggleBubble = () => {
-        console.log({bubbleOpen})
-        if (!bubbleOpen) openBubble()
-    }
+    const toggleBubble = () => setBubbleOpen(!bubbleOpen)
 
-    const openBubble = () => {
-        console.log("open")
-        setPinClass("pin open")
-        setBubbleOpen(true)
-    }
-
-    const closeBubble = source => {
-        console.log("close", { source })
+    const closeBubble = e => {
+        if (e) e.stopPropagation()
         setBubbleOpen(false)
-        setTimeout(() => setPinClass("pin"), 600)
     }
 
     const calculateDelay = delay => delay >= 168 ? `${Math.floor(delay / 168)}sem` : delay >= 24 ? `${Math.floor(delay / 24)}j` : `${delay}h`
 
-    const { view_wrapper, menu_container, pin_title, avatar, pin: pinStyle, modal_body, card_container, card_container_mobile, top_menu, content_wrapper, bottom_menu, top_menu_text, } = styles
-    const bodyStyle = combineStyles(card_container, card_container_mobile, { borderBottom: `5px solid ${pin.color ? pin.color : colors[Math.floor(Math.random() * 5)]}` })
+    const { wrapper, pin_title, avatar, pin: pinStyle, card_container, card_container_mobile, top_menu, content_wrapper, bottom_menu, top_menu_text, } = styles
+    const bodyStyle = combineStyles(card_container, card_container_mobile, { borderBottom: `5px solid ${pin.color ? pin.color : colors[Math.floor(Math.random() * 5)]}`, zIndex: bubbleOpen ? 11000 : 500 })
 
     return (
-        <div style={ bodyStyle } className={ pinClass } onClick={ toggleBubble }>
-            <div style={top_menu}>
-                <img src={`/images/goodpin${Math.floor(Math.random() * 2) + 1}.png`} alt="pin" style={pinStyle} />
+        <div style={ combineStyles(wrapper, { zIndex: bubbleOpen ? 11500 : 9000 }) }>
+            <Bubble open={ bubbleOpen } index={ index } pinSize={ pinSize } id={ `bubble-${pin._id}` } handleClose={ closeBubble } />
+            <div style={ bodyStyle } className={ pinClass } ref={ pinRef } onClick={ toggleBubble }>
+                <div style={top_menu}>
+                    <img src={`/images/goodpin${Math.floor(Math.random() * 2) + 1}.png`} alt="pin" style={pinStyle} />
+                </div>
+                <div style={ content_wrapper }>
+                    { pin.content && <h4 style={ pin_title }>{ pin.content }</h4> }
+                </div>
+                <div style={bottom_menu}>
+                    <h6 style={top_menu_text}>Temps restant : {calculateDelay(pin.delay)}</h6>
+                    <img title={pin.creator ? pin.creator.name : ''} src={pin.creator ? pin.creator.avatar : ''} alt="" style={combineStyles(avatar, theme.foreground)}/>
+                </div>
+
             </div>
-            <div style={ content_wrapper }>
-                { pin.content && <h4 style={ pin_title }>{ pin.content }</h4> }
-            </div>
-            <div style={bottom_menu}>
-                <h6 style={top_menu_text}>Temps restant : {calculateDelay(pin.delay)}</h6>
-                <img title={pin.creator ? pin.creator.name : ''} src={pin.creator ? pin.creator.avatar : ''} alt="" style={combineStyles(avatar, theme.foreground)}/>
-            </div>
-            <Bubble open={ bubbleOpen } id={ `bubble-${pin._id}` } handleClose={ closeBubble } style={ { borderRadius: '0px 0px 20px 2px' } } height="160px">
-                BUBBLE
-            </Bubble>
         </div>
     )
 }
 
 const styles = {
+    wrapper: {
+        zIndex: 11500,
+        position: "relative"
+    },
     card_container: {
         cursor: "pointer",
         display: "grid",
@@ -74,14 +81,12 @@ const styles = {
         maxHeight: '400px',
         boxShadow: '1px 3px 15px 3px rgba(0, 0 , 0, 0.2)',
         zIndex: 5,
-        margin: 'auto',
-        position: "relative",
-        backgroundColor: '#FFF' 
+        backgroundColor: '#FFF',
+        position: "relative"
     },
     card_container_mobile: {
         width: `250px`,
         height: 'auto',
-        margin: 'auto',
         maxHeight: '2500px'
     },
     top_menu: {

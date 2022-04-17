@@ -9,7 +9,7 @@
     background-color: white;
     width: 0;
     overflow-x: hidden;
-    z-index: 500;
+    z-index: 9500;
     box-shadow: 2px 2px 7px 5px rgba(0, 0, 0, 0.1);
 }
 

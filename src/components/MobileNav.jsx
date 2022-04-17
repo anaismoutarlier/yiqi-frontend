@@ -53,7 +53,7 @@ const MobileNav = () => {
                     color="#ffffff"
                     />
                 </Link>
-                <Link to="/account" style={ link }>
+                <Link to="/compte" style={ link }>
                     <Icon
                     path={ mdiHomeOutline }
                     size={ 0.8 }

@@ -157,7 +157,7 @@ const styles = {
     background_preview: {
         width: '120px',
         height: '80px',
-        boxShadow: '1px 1px 1px 1px rgba(0, 0, 0, 0.2)',
+        // boxShadow: '1px 1px 1px 1px rgba(0, 0, 0, 0.2)',
         borderRadius: '5px',
         margin: 20,
         backgroundSize: 'cover',

@@ -49,7 +49,7 @@ const styles = {
         borderRadius: '3px',
         width: '100%',
         marginBottom: 20,
-        boxShadow: '1px 1px 1px 1px rgba(0, 0, 0, 0.2)',
+        // boxShadow: '1px 1px 1px 1px rgba(0, 0, 0, 0.2)',
         border: '1px solid rgba(0, 0, 0, 0.2)',
         paddingTop: 8,
         paddingLeft: 12,

@@ -16,7 +16,7 @@ import { MediaContext } from '../../../hooks/media-context'
 //HELPER FUNCTIONS_____________________________
 import combineStyles from '../../../helpers/combineStyles'
 
-const Category = ({ title, icon, boards, isSelected, setSelected, name, toggleFavorite }) => {
+const Category = ({ title, icon, boards, isSelected, setSelected, name, favorite }) => {
     //CONTEXT______________________________
     const { theme } = useContext(ThemeContext)
     const media = useContext(MediaContext)
@@ -82,7 +82,7 @@ const Category = ({ title, icon, boards, isSelected, setSelected, name, toggleFa
                                 board={ board }
                                 key={ i }
                                 displayCircle={ name === 'favorites' }
-                                toggleFavorite={ toggleFavorite }
+                                favorite={ favorite }
                                 />
                             ) }
                     </div>

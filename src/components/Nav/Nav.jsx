@@ -84,8 +84,8 @@ export default function Nav() {
                             />
                         </Slider>
                     </Link>
-                    <Link to="/account">
-                        <Slider name="Dashboard" color={ theme.background.backgroundColor }>
+                    <Link to="/compte">
+                        <Slider name="Compte" color={ theme.background.backgroundColor }>
                             <Icon
                                 path={ mdiHomeOutline }
                                 size={0.7}

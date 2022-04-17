@@ -270,7 +270,7 @@ const styles = {
         width: '20px',
         margin: 3,
         borderRadius: 3,
-        boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.2)',
+        // boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.2)',
         boxSizing: 'border-box'
     },
     color_option_selected: {
@@ -303,7 +303,7 @@ const styles = {
     timepicker_container: {
         height: '1.8rem',
         borderRadius: '3px',
-        boxShadow: '1px 1px 1px 1px rgba(0, 0, 0, 0.2)',
+        // boxShadow: '1px 1px 1px 1px rgba(0, 0, 0, 0.2)',
         overflow: 'hidden',
         display: 'flex',
         marginRight: 4

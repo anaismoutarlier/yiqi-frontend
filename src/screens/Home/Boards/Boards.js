@@ -41,7 +41,7 @@ export default function Boards() {
         : (b.isActive && !a.isActive) ? 1
         : 0
 
-    const toggleFavorite = async (board, isFavorite) => {
+    const favorite = async (board, isFavorite) => {
         let endpoint;
         let options = {}
 
@@ -79,10 +79,10 @@ export default function Boards() {
         }
     }
 
-    const { page_container } = styles
+    const { page_container, wrapper } = styles
 
     return (
-        <div style={ page_container } className='hide-scrollbar'>
+        <div style={ wrapper }>
             <Category 
             title="FAVORIS" 
             icon={ mdiHeartOutline } 
@@ -90,7 +90,7 @@ export default function Boards() {
             setSelected={ setSelected } 
             boards={ boards.filter(e => e.isFavorite) }
             name="favorites"
-            toggleFavorite={ toggleFavorite } />
+            favorite={ favorite } />
             <Category 
             title="PERSO" 
             icon={ mdiAccountOutline } 
@@ -98,7 +98,7 @@ export default function Boards() {
             setSelected={ setSelected }  
             boards={ boards.filter(e => e.circles.map(e => e._id).includes(userCircle._id)).sort(sortBoards) }
             name="personal"
-            toggleFavorite={ toggleFavorite } />
+            favorite={ favorite } />
             {
                 circles.filter(e => e._id !== userCircle._id).map((e, i) => 
                     <Category
@@ -108,11 +108,11 @@ export default function Boards() {
                     setSelected={ setSelected }
                     boards={ boards.filter(board => board.circles.map(circle => circle._id).includes(e._id)).sort(sortBoards) }
                     name={ e._id }
-                    toggleFavorite={ toggleFavorite }
+                    favorite={ favorite }
                     />
                 )
             }
-        </div>  
+        </div>
     )
 }
 
@@ -123,6 +123,14 @@ const styles = {
         flexDirection: 'column',
         overflowY: 'scroll',
         maxHeight: '100vh',
-        width: '100%'
+        width: '100%',
+        padding: 30
     },
+    wrapper: {
+        height:'100%',
+        maxHeight: '100%',
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        margin: "50px 30px 30px 30px",
+        boxSizing: "border-box"
+    }
 }

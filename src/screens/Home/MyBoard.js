@@ -1,8 +1,5 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 import "./home.css"
-
-//STYLES___________________________
-import { defaultstyles } from '../../styles'
 
 //REDUX___________________________
 import { useSelector } from 'react-redux'
@@ -12,25 +9,14 @@ import combineStyles from '../../helpers/combineStyles'
 
 //COMPONENTS_________________________
 import Pin from '../../components/Pin'
-import Sider from "../../components/Sider"
 
 //SCROLL___________________________
 // import SimpleBar from "simplebar-react"
-
-//CONTEXT___________________
-import { ThemeContext } from '../../hooks/theme-context'
-
-//UI___________________________
-import { Icon } from "@mdi/react"
-import { mdiWeatherSunset, mdiWeatherSunny, mdiWeatherNight } from '@mdi/js';
 
 //SOCKETS_________________
 import { joinAll, leaveAll } from '../../sockets'
 
 export default function MyBoard() {
-    //CONTEXT___________________________
-    const { theme } = useContext(ThemeContext)
-
     //STORE_______________________
     const user = useSelector(({ user }) => user)
 
@@ -108,48 +94,23 @@ export default function MyBoard() {
             setBoard(temp)
         }
     }
-
-    const { subtitle, menu_header } = defaultstyles
-    const { container, board: boardStyle } = styles
-
-    const weatherIcon = time === sunData.sunrise || time === sunData.sunset ? mdiWeatherSunset : time > sunData.sunrise && time < sunData.sunset ? mdiWeatherSunny : mdiWeatherNight
     
+    const { container } = styles
     return (
         <div style={ container }>
-            <Sider>
-                <div style={ combineStyles(menu_header, { borderBottom: `1px solid ${theme.foreground.color}`}) }>
-                    <Icon
-                    path={ weatherIcon }
-                    size={ 0.8 }
-                    color={ theme.foreground.color }
-                    style={{ marginRight: 5 }}
-                    />
-                    <h2 style={ combineStyles(subtitle, theme.foreground) }><span>{ time > 7 && time < 17 ? "Bonjour" : "Bonsoir" }</span>, Anaïs!</h2>
-                </div>
-            </Sider>
-            <div style={ combineStyles(boardStyle, { background: `url(${user.preferences.background})`, backgroundPosition: "cover" }) }>
-                {/* <SimpleBar id="board-scroll" style={ { height: '100%', width: '100%' } }> */}
-                    { board?.pins.length > 0 && board.pins.map((e, i) => <Pin pin={ e } key={ i } />) }
-                {/* </SimpleBar> */}
-            </div>
+            {/* <SimpleBar id="board-scroll" style={ { height: '100%', width: '100%' } }> */}
+                { board?.pins.length > 0 && board.pins.map((e, i) => <Pin pin={ e } key={ e.id } index={ i } />) }
+            {/* </SimpleBar> */}
         </div>
     )
 }
 
 const styles = {
     container: {
-        display: "grid",
-        boxSizing: 'border-box',
-        height: '100%',
-        gridTemplateColumns: 'auto 1fr'
-    },
-    board: {
-        display: "flex",
-        flexWrap: "wrap",
-        height: '100%',
-        maxHeight: '100%',
-        justifyContent: "flex-start",
-        alignItems: 'flex-start',
-        boxSizing: "border-box",
+        display: 'grid',
+        gridTemplateColumns: "repeat(auto-fill, 340px)",
+        gridTemplateRows: "repeat(auto-fill, 180px)",
+        paddingTop: 40,
+        paddingLeft: 20
     }
 }

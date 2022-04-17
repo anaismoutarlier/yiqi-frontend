@@ -187,7 +187,7 @@ const styles = {
         position: 'absolute',
         right: 25,
         top: 20,
-        zIndex: 2000
+        zIndex: 9501
     },
     menu_container_mobile: {
         flexDirection: 'column-reverse',

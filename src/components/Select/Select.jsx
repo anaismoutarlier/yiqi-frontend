@@ -56,7 +56,7 @@ export const SelectTag = ({ item, setSelection, closable = true }) => {
     )
 }
 
-const Select = ({ style, values, handleChange, placeholder, defaultValues, name, multiple = false, closable = true }) => {
+const Select = ({ style = {}, values, handleChange, placeholder, defaultValues, name, multiple = false, closable = true }) => {
     //CONTEXT_________________________
     const { theme } = useContext(ThemeContext)
 
