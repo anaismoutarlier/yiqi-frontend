@@ -1,9 +1,4 @@
-import React, { useState, useEffect } from 'react'
-
-///ANTD______________
-// import { Input } from 'antd';
-// import 'antd/dist/antd.css'
-// import { UserOutlined } from '@ant-design/icons';
+import React, { useState, useEffect, useContext } from 'react'
 
 //styles_________
 import '../../App.css'
@@ -24,11 +19,13 @@ import {
     mdiArrowTopLeft,
     mdiArrowRight,
     mdiArrowLeft,
+    mdiRotateRightVariant,
+    mdiRotateLeftVariant,
+    mdiOrbitVariant,
 } from '@mdi/js'
 
-//CONTEXT___________________
-import { ThemeContext } from '../../hooks/theme-context';
-
+//CONTEXT____________________
+import { ThemeContext, themes } from '../../hooks/theme-context'
 
 //COMPONENTS
 import Button from '../Button'
@@ -39,59 +36,86 @@ import Select from '../Select'
 //HELPER FUNCTIONS__________________
 import combineStyles from '../../helpers/combineStyles'
 
-const Circles = ({user, theme}) => {
+const Circles = ({ user }) => {
+//CONTEXT HOOK
+    const { theme, changeTheme } = useContext(ThemeContext)
 
+//STATES HOOKS
     const [circlesOfSelectedArchi, setCirclesOfSelectedArchi] = useState([])
-    const [usersOfSelectedArchi, setUsersOfSelectedArchi] = useState([])
+    const [listOfNamesAndAvatars, setListOfNamesAndAvatars] = useState([])
 
     const [architectures, setArchitectures] = useState([])
-    const [archiSelected, setArchiSelected] = useState(architectures[0])
+    const [archiSelected, setArchiSelected] = useState()
     const [cutArchi, setCutArchi] = useState()
 
     const [clients, setClients] = useState([])
-    const [clientSelected, setClientSelected] = useState(clients[0])
+    const [clientSelected, setClientSelected] = useState({})
 
+    const [showUsers, setShowUsers] = useState({level: null, show: false, right: 0, top: 0})
 
-//mounting component
+//mounting component and follow user
     useEffect(() => {
-
-        const fetchArchitecture = async () => {
-            // si user appartient à admin d'un ou plusieurs clients, donc possédant des architectures
-            //const isAdmin = await fetch(`/users/isadmin/${user.user._id}`)
-            const data = await fetch(`${global.BACKEND}/users/architectures`)
+        console.log({user})
+        const fetchClients = async () => {
+            const data = await fetch(`${global.BACKEND}/users/isadmin/${user._id}`)
             const json = await data.json()
 
             if (json.result) {
-                setArchitectures(json.architectures)
-                setArchiSelected(json.architectures[0])
+                // if(json.clientsWhereUserAdmin) {console.log('*********************************** ', json.clientsWhereUserAdmin)
+                // console.log('*********************************** 2 ', json.clientsWhereUserAdmin[0])
+                // console.log('*********************************** 3 ', json.clientsWhereUserAdmin[0].architectures)
+                // console.log('*********************************** 4 ', json.clientsWhereUserAdmin[0].architectures[0])
+                // }
+              
+            console.log(json.result)
+                
+                setClients(json.clientsWhereUserAdmin)
+                setClientSelected(json.clientsWhereUserAdmin[0])
+                    setArchitectures(json.clientsWhereUserAdmin[0].architectures)
+                    setArchiSelected(json.clientsWhereUserAdmin[0].architectures[0])
             }
         }
-
-        if (user) fetchArchitecture()
-
+        if (user) fetchClients()
 
     }, [user])
+
+// useEffect(()=> {
+
+//     const fetchArchitectures = async () => {
+
+//         const data = await fetch(`${global.BACKEND}/users/architectures/${clientSelected._id}`)
+//         const json = await data.json()
+
+//         if (json.result) {
+//             setArchitectures(json.architectures)
+//             setArchiSelected(json.architectures[0])
+//         }
+//     }
+
+//     if (clientSelected) fetchArchitectures()
+// }, [clientSelected])
+
 
 //Maintaining setters
     useEffect(()=>{
         console.log('ArchiSelected : ', archiSelected)
         // transform in a flat array for Select with depth to render depth in front
-        if (archiSelected) {extractCircles([archiSelected])}
-        getUsers(circlesOfSelectedArchi)
+        if (cutArchi) {
+            extractCircles([cutArchi])
+        } else {
+            if (archiSelected) {extractCircles([archiSelected])}
+        //get users from selected Archi
+        }
     }, [archiSelected])
 
     useEffect(()=>{
-        console.log('circlesOfSelectedArchi : ', circlesOfSelectedArchi)
+        getUsers(circlesOfSelectedArchi)
     }, [circlesOfSelectedArchi])
-
-    useEffect(()=>{
-        console.log('cutArchi : ', cutArchi)
-    }, [cutArchi])
 
 //FONCTIONS FACTORISEES
 
     // extract circles from selected archi
-    const temp = []; 
+    let temp = []; 
     const extractCircles = (archi, d = 0) => {            
         if(archi) {
                 archi.forEach((el)=>{
@@ -103,61 +127,73 @@ const Circles = ({user, theme}) => {
     }
 
     // fetch users of each circle in circles of selected archi
-    const tempSecond = []
-    const getUsers = async (archi) => {
-        const fetchCirclesUsers = async (circle) => {
-            const data = await fetch(`${global.BACKEND}/circles/get-users/${circle._id}`)
-            const json = await data.json()
-            if (json.result) {
-                tempSecond.push({...json.result, id: circle._id})
-            }
-        }
-        archi.forEach((circle)=>{
-            fetchCirclesUsers(circle)
+    const getUsers = async () => {
+
+        const data = await fetch(`${global.BACKEND}/circles/get-users`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ array: circlesOfSelectedArchi })
         })
-        setUsersOfSelectedArchi(tempSecond)
-        console.log(tempSecond)
+            const json = await data.json()
+
+             if (json.result) {
+                setListOfNamesAndAvatars(json.listOfNamesAndAvatars)
+             }
     }
-
-
-
 
 // handle click on div circle
     const handleClick = (e, level) => {
             if (!e) var e = window.event;
             e.cancelBubble = true;
             if (e.stopPropagation) e.stopPropagation();
-            if (!cutArchi) {
-            setCutArchi(archiSelected)
-            setArchiSelected(level)
-        }  else {setArchiSelected(level)}
+            
+            if(cutArchi && archiSelected === level) {
+                setArchiSelected(cutArchi)
+                setCutArchi()
+            } else if (cutArchi && archiSelected !== level) { 
+                setArchiSelected(level)
+            } else {
+                setCutArchi(archiSelected)
+                setArchiSelected(level)   
+            }       
     }
 
 // handle up & down
 
-    const handleUp = (e, level) => {
+    const handleUp = async (e, level) => {
+        
         if (!e) var e = window.event;
         e.cancelBubble = true;
         if (e.stopPropagation) e.stopPropagation();
-        console.log(level)
+
+        const data = await fetch(`${global.BACKEND}/architectures/update-index`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ archiId: archiSelected._id, circleId: level.circle, typeUpDown: 'up' })
+        })
+            const json = await data.json()
+            if (json.result) {
+                setArchiSelected(json.archiSaved)
+            }
     }
 
-    const handleDown = (e, level) => {
+    const handleDown = async (e, level) => {
+
         if (!e) var e = window.event;
         e.cancelBubble = true;
         if (e.stopPropagation) e.stopPropagation();
-        console.log(level)
-    }
 
-//FUNCTION TO GET PARENT ID FROM DATABASE CIRCLE
-const fetchCircleParent = async (circle) => {
-    const data = await fetch(`${global.BACKEND}/circles/get-parents/${circle.circle}`)
-    const json = await data.json()
-    if (json.result) {
-        return json.parents
-    }
-}
+        const data = await fetch(`${global.BACKEND}/architectures/update-index`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({ archiId: archiSelected._id, circleId: level.circle, typeUpDown: 'down' })
+        })
+            const json = await data.json()
+            if (json.result) {
+                setArchiSelected(json.archiSaved)
+            }
 
+    }
 
 //FUNCTION TO FIND THEN TOGGLE ORIENTATION
 
@@ -180,14 +216,16 @@ findAndToggle(copy, idToSearch)
 } 
 
 
-// toggle Orientation
+// toggle Orientation    
 
-    const toggleOrientation = async (e, level) => {
+    const toggleOrientation = async (e, level) => {    
+
         if (!e) var e = window.event;
         e.cancelBubble = true;
         if (e.stopPropagation) e.stopPropagation();
 
         //fetch update architecture
+
         const data = await fetch(`${global.BACKEND}/architectures/update-orientation`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json'},
@@ -196,80 +234,16 @@ findAndToggle(copy, idToSearch)
             const json = await data.json()
     
             if (json.result) {
-                console.log('circle modified : ', json.circle)
                 //change architecture in front
                 copyArchiToToggleOrientation(archiSelected, level._id)
             }
         
     }
 
-// déploiement de l'archi
-let boo = false
 
-const architecturesDeploy = (archi, theme, j = 0) => {
-    console.log('ARCHI : ', archi)
-    return(
-    archi.map( (level, i) => {
-
-        if (i==0) {boo = !boo}
-        if (i==archi.length) {boo = !boo}
-
-         return (
-          <div onClick={(e)=>handleClick(e, level)} className={`${j!=0 && 'circle '}transition-color`} style={{borderBottom: `2px solid ${theme.foreground.borderColor}`, cursor: 'pointer', display: 'flex', flexDirection: 'column', padding: j===0 ? 30 : 10, margin: '0.5%', minWidth: 20, minHeight: 20, width: '90%', height: 'fit-content', backgroundColor: j%2 === 0 ? '#eee' : '#ddd', borderRadius: 3, boxShadow: '0px 0px 3px 1px rgba(0, 0 , 0, 0.1)'}}>
-                <div style={{fontWeight: 'bolder', color: theme.foreground.color, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', marginBottom: `${j===0 && '20px'}`}}>
-                    {level.name}
-                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
-                            {
-                                <div className='transition-color' style={{padding: 5, borderRadius: '50%', fontSize: 14, color: 'white', backgroundColor: theme.background_transparent.backgroundColor}}>25</div>
-                            }
-                            {level.children.length > 1 &&
-                            <Icon
-                                path={level.orientation === 'horizontal' ? mdiViewParallelOutline : mdiViewSequentialOutline}
-                                size={1}
-                                color={theme.foreground.color}
-                                style={{cursor: 'pointer'}}
-                                onClick={(e)=>toggleOrientation(e, level)}
-                            />
-                            }
-                            {archi.length > 1 && i > 0 &&
-                            <Icon
-                                path={mdiArrowUp}
-                                size={0.8}
-                                color={'#999'}
-                                style={{cursor: 'pointer'}}
-                                onClick={(e)=>handleUp(e, level)}
-                            />
-                            }
-                            {archi.length > 1 && i < archi.length-1 &&
-                            <Icon
-                                path={mdiArrowDown}
-                                size={0.8}
-                                color={'#999'}
-                                style={{cursor: 'pointer'}}
-                                onClick={(e)=>handleDown(e, level)}
-                            />
-                            }
-                            <Icon
-                                path={mdiClose}
-                                size={1}
-                                color={'#999'}
-                                style={{cursor: 'pointer'}}
-                                onClick={()=>console.log('click')}
-                            />
-                        </div>
-                </div>
-                <div style={{display: 'flex', flexDirection: level.orientation == 'horizontal' ? 'column' : 'row'}}>
-              {level.children.length > 0 && architecturesDeploy(level.children, theme, j + 1)}
-                </div>
-          </div>
-         )
-         
-    }))
-}
-
-
+//FONCTIONS DE GESTION DES SELECTIONS DANS LES SELECTS
     const updateArchiSelection = e => {
-        console.log(e)
+
         setArchiSelected(e.value)
     }
 
@@ -279,28 +253,98 @@ const architecturesDeploy = (archi, theme, j = 0) => {
         setArchiSelected(e.value)
         } else {setArchiSelected(e.value)}
     }
+
+//apparition of users on hover number
+
+const toggleUsers = (event, level) => {
+    if (!event) var event = window.event;
+    event.cancelBubble = true;
+    if (event.stopPropagation) event.stopPropagation();
+
+    showUsers.show ?
+    setShowUsers({level: null, show: false})
+    :
+    setShowUsers({level: level, show: true})
+
+
+}
+
+// déploiement de l'archi
+let boo = false
+
+const architecturesDeploy = (archi, theme, j = 0, orientationParent) => {
+    return(
+    archi.map( (level, i) => {
+
+        if (i==0) {boo = !boo}
+        if (i==archi.length) {boo = !boo}
+
+         return (
+          <div onClick={(e)=>handleClick(e, level)} className={`${j!=0 && 'circle '}transition-color`} style={{borderBottom: `2px solid ${theme.foreground.color}`, cursor: 'pointer', display: 'flex', flexDirection: 'column', padding: j===0 ? 30 : 10, margin: '0.5%', minWidth: 20, minHeight: 20, width: '90%', height: 'fit-content', backgroundColor: j%2 === 0 ? '#eee' : '#ddd', borderRadius: 3, boxShadow: '0px 0px 3px 1px rgba(0, 0 , 0, 0.1)'}}>
+                <div style={{fontWeight: 'bolder', color: theme.foreground.color, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems:'center', marginBottom: `${j===0 ? '20px' : '10px'}`}}>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <h4 style={{margin: 0, fontSize: 16-j}}>{level.name}</h4>
+                         {listOfNamesAndAvatars?.filter(e=>e.id === level.circle)[0]?.datas.length > 0 &&
+                                <div className='transition-color' onClick={(e)=>{toggleUsers(e, level)}} style={{marginLeft: 10, minHeight: '1.05vh', minWidth: '0.6vw', padding: 4, borderRadius: '50%', fontSize: 12, color: 'white', backgroundColor: theme.background_transparent.backgroundColor}}>{listOfNamesAndAvatars?.filter(e=>e.id === String(level.circle))[0]?.datas.length}</div>
+    
+                        }
+                    </div>    
+                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', alignItems:'center'}}>
+                            {level.children.length > 1 &&
+                            <Icon
+                                path={mdiOrbitVariant}
+                                size={0.7}
+                                color={theme.foreground.color}
+                                style={{cursor: 'pointer', marginRight: 10}}
+                                onClick={(e)=>toggleOrientation(e, level)}
+                            />
+                            }
+                            {archi.length > 1 && i > 0 &&
+                            <Icon
+                                path={orientationParent === 'horizontal' ? mdiArrowUp : mdiArrowLeft}
+                                size={0.6}
+                                color={'#999'}
+                                style={{cursor: 'pointer'}}
+                                onClick={(e)=>handleUp(e, level)}
+                            />
+                            }
+                            {archi.length > 1 && i < archi.length-1 &&
+                            <Icon
+                                path={orientationParent === 'horizontal' ? mdiArrowDown : mdiArrowRight}
+                                size={0.6}
+                                color={'#999'}
+                                style={{cursor: 'pointer'}}
+                                onClick={(e)=>handleDown(e, level)}
+                            />
+                            }
+                            <Icon
+                                path={mdiClose}
+                                size={0.8}
+                                color={'#999'}
+                                style={{cursor: 'pointer', marginLeft: 3}}
+                                onClick={()=>console.log('click')}
+                            />
+                        </div>
+                </div>
+                <div style={{display: 'flex', flexDirection: level.orientation == 'horizontal' ? 'column' : 'row'}}>
+              {level.children.length > 0 && architecturesDeploy(level.children, theme, j + 1, level.orientation)}
+                </div>
+          </div>
+         )
+         
+    }))
+}
     
     return (
-        <ThemeContext.Consumer>
-        { ({ theme }) => 
         <>
             <div className="hide-scrollbar" style={{ minHeight: '80%', height: '100%', maxHeight: '100%', overflow: 'scroll', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start'}}>
 
-                <div style={{height: '5%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    {cutArchi && 
-                        <Icon
-                        path={mdiArrowTopLeft}
-                        size={1}
-                        color={'#999'}
-                        style={{cursor: 'pointer'}}
-                        onClick={()=>{setArchiSelected(cutArchi); setCutArchi()}}
-                        title={'Retour à la base'}
-                        />
-                    }
+                <div style={{height: '5%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <div style = {{paddingLeft: '2.7vw', display : 'flex', flex: 1}}>
                     <Select
                     values={ clients.map(client => ({ value: client, label: client.name })) }
-                    handleChange={ (e)=>{setClientSelected(e); console.log(e)} }
-                    placeholder={'client to fix in clientSelected'}
+                    handleChange={ (e)=>{setClientSelected(e)} }
+                    placeholder={clientSelected && `Organisation : ${clientSelected.name}`}
                     name="clientselect"
                     style={{width: '20%', margin: 10}}
                     closable={false}
@@ -308,7 +352,7 @@ const architecturesDeploy = (archi, theme, j = 0) => {
                     <Select
                     values={ architectures.map(archi => ({ value: archi, label: archi.name })) }
                     handleChange={ updateArchiSelection }
-                    placeholder={'archi to fix in archiSelected'}
+                    placeholder={architectures[0] && `Architecture : ${architectures[0].name}`}
                     name="archtectureselect"
                     style={{width: '20%', margin: 10}}
                     closable={false}
@@ -316,11 +360,26 @@ const architecturesDeploy = (archi, theme, j = 0) => {
                     <Select
                     values={ circlesOfSelectedArchi.map(e=>({ value: e, label: Array(3).fill('\xa0').join('').repeat(e.depth) + '· ' + e.name})) }
                     handleChange={ handleCircleSelection }
-                    placeholder="Cercle..."
+                    placeholder="Cercles..."
                     name="cercleselect"
                     style={{width: '20%', margin: 10}}
                     closable={false}
                     />
+                    </div>
+                    {cutArchi &&
+                        <> 
+                        <Icon
+                        path={mdiArrowTopLeft}
+                        size={1}
+                        color={'#999'}
+                        style={{cursor: 'pointer'}}
+                        title={'Retour à la base'}
+                        onClick={()=>{setArchiSelected(cutArchi); setCutArchi()}}
+                        />
+                        <p style= {{cursor: 'pointer', color: '#999', fontSize: 10, paddingRight: '3.3vw'}} onClick={()=>{setArchiSelected(cutArchi); setCutArchi()}}>RETOUR A LA VUE GLOBALE</p>
+                        
+                        </>
+                    }
                 </div>
 
                 <div style={{height: '95%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start'}}>                
@@ -329,93 +388,54 @@ const architecturesDeploy = (archi, theme, j = 0) => {
                 }
                 </div>
 
+                {showUsers &&                            
+                    <div style={{
+                        display: showUsers.show ? 'flex' : 'none',
+                        flexDirection: 'column',
+                        justifyContent: 'start',
+                        alignItems: 'start',
+                        backgroundColor: '#FFF',
+                        position : 'absolute',
+                        right: 0,
+                        minWidth: 50,
+                        maxHeight: '79%',
+                        padding: '10px 10px 10px 20px',
+                        borderRadius: 5,                                
+                        overflowY: 'auto',
+                        borderLeft: `2px solid ${theme.foreground.color}`,
+                        transition: 'all 0.1 ease-in'
+                        }}
+                        >
+                    <span style={{position: 'sticky', alignSelf: 'flex-end', top: 5, right: 5, cursor: 'pointer', height: 0}}>
+                        <Icon
+                            path={mdiClose}
+                            size={0.8}
+                            color={'#999'}
+                            style={{cursor: 'pointer'}}
+                            onClick={()=>{setShowUsers({level: null, show: false, right: 0, top: 0})}}
+                        />
+                    </span>
+                    {showUsers.level &&
+                        listOfNamesAndAvatars?.filter(e=>e.id === showUsers.level.circle)[0]?.datas.map((user)=>{
+                                return (
+                                    <div style={{margin: '5px 0px', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                                       <img style={{borderRadius: '50%', paddingRight: 10, width: 30, height: 30}} src={user.avatar}/> 
+                                        <span>{user.username}</span>
+                                    </div>
+                                )
+                        })
+                    }
+                    </div>
+                }
+
         </div>
         </>
-        }
-        </ThemeContext.Consumer> 
     )
-}
-
-
-const styles = {
-
-    first: {
-        fontWeight: 'bold',
-        margin: 10,
-        borderRadius: 10,
-        maxHeight: '90%',
-        minWidth: '25%',
-        fontSize: '1vw',
-        backgroundColor: 'rgb(220,220,220,0.8)',
-        boxShadow: '1px 2px 10px 2px rgba(0, 0 , 0, 0.4)',
-        flexShrink: 1
-    },
-    second: {
-        fontWeight: 'bold',
-        margin: 10,
-        borderRadius: 10,
-        backgroundColor: 'rgb(255,255,255,0.6)',
-        fontSize: '1vw',
-        boxShadow: '1px 2px 10px 2px rgba(0, 0 , 0, 0.4)',
-        flexWrap: 'wrap',
-        flexShrink: 1
-    },
-    third: {
-        fontWeight: 'bold',
-        margin: 10,
-        borderRadius: 10,
-        backgroundColor: 'rgb(255,255,255,0.8)',
-        fontSize: '1vw',
-        boxShadow: '1px 2px 10px 2px rgba(0, 0 , 0, 0.4)',
-        flexWrap: 'wrap',
-        flexShrink: 1
-    },
-    fourth: {
-        margin: 10,
-        borderRadius: 10,
-        backgroundColor: 'rgb(220,220,220,0.8)',
-        fontSize: '1vw',
-        boxShadow: '1px 2px 10px 2px rgba(0, 0 , 0, 0.4)',
-        flexWrap: 'wrap',
-        flexShrink: 1
-    },
-    fifth: {
-        margin: 10,
-        borderRadius: 10,
-        backgroundColor: 'rgb(255,255,255,0.6)',
-        fontSize: '1vw',
-        boxShadow: '1px 2px 10px 2px rgba(0, 0 , 0, 0.4)',
-        flexWrap: 'wrap',
-        flexShrink: 1
-    },
-    sixth: {
-        margin: 10,
-        borderRadius: 10,
-        backgroundColor: 'rgb(255,255,255,0.8)',
-        fontSize: '1vw',
-        boxShadow: '1px 2px 10px 2px rgba(0, 0 , 0, 0.4)',
-        flexWrap: 'wrap',
-        flexShrink: 1
-    },
-    input:  {
-
-        borderRadius: 5,
-        boxShadow: 'none',
-        border: 'none',
-        height: 25,
-        paddingLeft: 10,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        flexShrink: 1
-    }
-
 }
 
 
 function mapStateToProps({ user }) {
     return { user }
 }
+
 export default connect(mapStateToProps, null)(Circles);
