@@ -4,12 +4,17 @@ import '../App.css'
 //REDUX_______________________________
 import { useSelector } from 'react-redux'
 
+//STYLES_____________________________
+import { defaultstyles } from "../styles"
+
 //COMPONENTS___________________________
 import Circles from '../components/dashboardviews/Circles'
 import Settings from '../components/dashboardviews/Settings'
 import Network from '../components/dashboardviews/Network'
 //import Account from '../components/dashboardviews/Account'
 import AddMenu from '../components/AddMenu'
+import Nav from '../components/Nav'
+import MobileNav from '../components/MobileNav'
 
 //HELPER FUNCTIONS___________________
 import combineStyles from '../helpers/combineStyles'
@@ -26,99 +31,108 @@ import { mdiCogOutline, mdiBlurRadial, mdiAccountGroup, mdiCrownOutline, mdiPenc
 const Account = () => {
     //CONTEXT______________________________
     const { theme } = useContext(ThemeContext)
-    const { media } = useContext(MediaContext)
+    const media = useContext(MediaContext)
 
     //STATE HOOKS___________________________
     const [selectedTab, setSelectedTab] = useState('settings')
     const user = useSelector(({ user }) => user)
 
+    const { nav_page, mobile_nav_page } = defaultstyles
+    const { page_container, page_container_mobile } = styles
     return (
-        <div style={ media === 'desktop' ? styles.page_container : styles.page_container_mobile }>
+        <div style={ media === 'desktop' ? nav_page : mobile_nav_page }>
+            {
+                media === "desktop"
+                ? <Nav />
+                : <MobileNav />
+            }
             { media === 'desktop' && <AddMenu /> }
-            <div style={ styles.banner }>
-                <div style={ styles.banner_content }>
-                    <div style={ media === 'desktop' ? combineStyles(styles.avatar, { backgroundImage: `url(${user.avatar})` }) : combineStyles(styles.avatar, styles.avatar_mobile, { backgroundImage: `url(${user.avatar})`}) }>
-                        {
-                            (selectedTab === 'settings' && media === 'desktop') &&
+            <div style={ media === "desktop" ? page_container : page_container_mobile }>
+                <div style={ styles.banner }>
+                    <div style={ styles.banner_content }>
+                        <div style={ media === 'desktop' ? combineStyles(styles.avatar, { backgroundImage: `url(${user.avatar})` }) : combineStyles(styles.avatar, styles.avatar_mobile, { backgroundImage: `url(${user.avatar})`}) }>
+                            {
+                                (selectedTab === 'settings' && media === 'desktop') &&
+                                <Icon
+                                path={ mdiPencilOutline }
+                                color={ theme.foreground.color }
+                                size={ 0.8 }
+                                rotate={ -8 }
+                                style={ { cursor: 'pointer', position: 'absolute', bottom: 15, right: 15 } }
+                                className="transition-color"
+                                />
+                            }
+                        </div>
+                        <h2 style={ combineStyles(styles.title, theme.foreground) }>{ user.username }</h2>
+                    </div>
+                    <div style={ styles.tab_menu }>
+                        <div 
+                        style={ selectedTab === 'settings' ? combineStyles(styles.tab, theme.foreground, styles.selected_tab) : combineStyles(styles.tab, theme.foreground) }
+                        onClick={ ()=>setSelectedTab('settings') }
+                        className="transition-color">
                             <Icon
-                            path={ mdiPencilOutline }
+                            path={ mdiCogOutline }
                             color={ theme.foreground.color }
                             size={ 0.8 }
-                            rotate={ -8 }
-                            style={ { cursor: 'pointer', position: 'absolute', bottom: 15, right: 15 } }
+                            style={ { marginTop: 1, marginRight: 3 } }
                             className="transition-color"
                             />
-                        }
-                    </div>
-                    <h2 style={ combineStyles(styles.title, theme.foreground) }>{ user.username }</h2>
-                </div>
-                <div style={ styles.tab_menu }>
-                    <div 
-                    style={ selectedTab === 'settings' ? combineStyles(styles.tab, theme.foreground, styles.selected_tab) : combineStyles(styles.tab, theme.foreground) }
-                    onClick={ ()=>setSelectedTab('settings') }
-                    className="transition-color">
-                        <Icon
-                        path={ mdiCogOutline }
-                        color={ theme.foreground.color }
-                        size={ 0.8 }
-                        style={ { marginTop: 1, marginRight: 3 } }
-                        className="transition-color"
-                        />
-                        { media === 'desktop' && 'Paramètres' }
-                    </div>
-                    <div 
-                    style={ selectedTab === 'circles' ? combineStyles(styles.tab, theme.foreground, styles.selected_tab) : combineStyles(styles.tab, theme.foreground) }
-                    onClick={ ()=>setSelectedTab('circles') }
-                    className="transition-color">
-                        <Icon
-                        path={ mdiBlurRadial }
-                        color={ theme.foreground.color }
-                        size={ 0.8 }
-                        style={ { marginTop: 1, marginRight: 3 } }
-                        className="transition-color"
-                        />
-                        { media === 'desktop' && 'Circles' }
-                    </div>
-                    <div
-                    style={ selectedTab === 'network' ? combineStyles(styles.tab, theme.foreground, styles.selected_tab) : combineStyles(styles.tab, theme.foreground) }
-                    onClick={ ()=>setSelectedTab('network') }
-                    className="transition-color">
-                        <Icon
-                        path={ mdiAccountGroup }
-                        color={ theme.foreground.color }
-                        size={ 0.8 }
-                        style={ { marginTop: 1, marginRight: 3 } }
-                        className="transition-color"
-                        />
-                        { media === 'desktop' && 'Communauté' }
-                    </div>
-                    <div
-                    style={ selectedTab === 'account' ? combineStyles(styles.tab, theme.foreground, styles.selected_tab) : combineStyles(styles.tab, theme.foreground) }
-                    onClick={ ()=>setSelectedTab('account') }
-                    className="transition-color">
-                        <Icon
-                        path={ mdiCrownOutline }
-                        color={ theme.foreground.color }
-                        size={ 0.8 }
-                        style={ { marginTop: 1, marginRight: 3 } }
-                        className="transition-color"
-                        />
-                        { media === 'desktop' && 'Espace client' }
+                            { media === 'desktop' && 'Paramètres' }
+                        </div>
+                        <div 
+                        style={ selectedTab === 'circles' ? combineStyles(styles.tab, theme.foreground, styles.selected_tab) : combineStyles(styles.tab, theme.foreground) }
+                        onClick={ ()=>setSelectedTab('circles') }
+                        className="transition-color">
+                            <Icon
+                            path={ mdiBlurRadial }
+                            color={ theme.foreground.color }
+                            size={ 0.8 }
+                            style={ { marginTop: 1, marginRight: 3 } }
+                            className="transition-color"
+                            />
+                            { media === 'desktop' && 'Circles' }
+                        </div>
+                        <div
+                        style={ selectedTab === 'network' ? combineStyles(styles.tab, theme.foreground, styles.selected_tab) : combineStyles(styles.tab, theme.foreground) }
+                        onClick={ ()=>setSelectedTab('network') }
+                        className="transition-color">
+                            <Icon
+                            path={ mdiAccountGroup }
+                            color={ theme.foreground.color }
+                            size={ 0.8 }
+                            style={ { marginTop: 1, marginRight: 3 } }
+                            className="transition-color"
+                            />
+                            { media === 'desktop' && 'Communauté' }
+                        </div>
+                        <div
+                        style={ selectedTab === 'account' ? combineStyles(styles.tab, theme.foreground, styles.selected_tab) : combineStyles(styles.tab, theme.foreground) }
+                        onClick={ ()=>setSelectedTab('account') }
+                        className="transition-color">
+                            <Icon
+                            path={ mdiCrownOutline }
+                            color={ theme.foreground.color }
+                            size={ 0.8 }
+                            style={ { marginTop: 1, marginRight: 3 } }
+                            className="transition-color"
+                            />
+                            { media === 'desktop' && 'Espace client' }
+                        </div>
                     </div>
                 </div>
+                {
+                    selectedTab === 'circles' ?
+                    <Circles />
+                    : selectedTab === 'settings' ?
+                    <Settings />
+                    : selectedTab === 'network' ?
+                    <Network />
+                    : selectedTab === 'account' ?
+                    //<Account />
+                    null
+                    : null
+                }
             </div>
-            {
-                selectedTab === 'circles' ?
-                <Circles />
-                : selectedTab === 'settings' ?
-                <Settings />
-                : selectedTab === 'network' ?
-                <Network />
-                : selectedTab === 'account' ?
-                //<Account />
-                null
-                : null
-            }
         </div>
     )
 }
