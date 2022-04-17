@@ -194,7 +194,7 @@ window.env = {
   "npm_package_description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "npm_package_eslintConfig_extends_0": "react-app",
   "npm_package_eslintConfig_extends_1": "react-app/jest",
-  "npm_package_gitHead": "58512ce24eab9a6d2e29761f33b86e10aa7ece45",
+  "npm_package_gitHead": "12fcb924aa68f9c10cd2681e9990b3520e093f98",
   "npm_package_name": "yiqi",
   "npm_package_private": "true",
   "npm_package_readmeFilename": "README.md",

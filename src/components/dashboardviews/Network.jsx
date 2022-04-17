@@ -175,7 +175,7 @@ useEffect(()=>{
                     <ThemeContext.Consumer>
                         {({ theme }) =>
                         <>
-                            <div className="list-container" id='list-container' style={{ height: '78%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', boxSizing: 'border-box', paddingTop: 20 }}>
+                            <div className="list-container" id='list-container' style={{ maxHeight: '78%', height: '78%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', boxSizing: 'border-box', paddingTop: 20 }}>
 
 {/* People list on the left side */}
                                 <div id="people-list" className={`hide-scrollbar sides${(currentSelectionCircle || currentSelectionPeople) ? '-open' : ''}`} style={combineStyles(theme.foreground, styles.sideContainer)}>
@@ -200,16 +200,18 @@ useEffect(()=>{
                                             /> */}
                                             <Icon
                                                 path={mdiDownloadCircleOutline}
+                                                className='iconcenter'
                                                 title='Import .csv'
-                                                size={1}
+                                                size={1.6}
                                                 color={theme.foreground.color}
                                                 style={{ padding: 10, cursor: 'pointer' }}
                                                 onClick={() => console.log('to the right')}
                                             />
                                             <Icon
                                                 path={mdiTrashCanOutline}
+                                                className='iconcenter'
                                                 title='Supprimer'
-                                                size={1}
+                                                size={1.6}
                                                 color={theme.foreground.color}
                                                 style={{ padding: 10, cursor: 'pointer' }}
                                                 onClick={() => console.log('to the right')}
@@ -262,31 +264,34 @@ useEffect(()=>{
                                 </div>
                     {/* MENU */}
                     <div style={{alignSelf: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center'}}>
-                        <h3 style={(currentSelectionCircle || currentSelectionPeople) && combineStyles(theme.foreground,{textAlign: 'center', padding: '0px 10px 10px 10px', marginTop:0, borderBottom: '1px solid rgba(0,0,0,0.6)', color: 'rgba(0,0,0,0.6)', position: 'absolute', top: '23%', overflow: 'visible'})}>
+                        <h3 style={(currentSelectionCircle || currentSelectionPeople) && combineStyles(theme.foreground,{textAlign: 'center', width: '25%', padding: '0px 10px 10px 10px', marginTop:0, borderBottom: '1px solid rgba(0,0,0,0.2)', color: '#343a40', position: 'absolute', top: '13.5%', overflow: 'visible'})}>
                             {currentSelectionCircle && currentSelectionCircle.name}{currentSelectionPeople && currentSelectionPeople.username}
                         </h3>
 
                         <div className={`menu${(currentSelectionCircle || currentSelectionPeople) ? '-open' : ''}`} style={combineStyles(theme.background, {overflow: 'hidden', borderRadius: 10, display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center'})}>
                                     <Icon
                                         path={mdiShieldAccountOutline}
+                                        className='iconcenter'
                                         title='Habiliter comme admin'
-                                        size={1}
+                                        size={1.6}
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
                                         onClick={()=>console.log('click')}
                                     />
                                     <Icon
                                         path={mdiAccountStarOutline}
+                                        className='iconcenter'
                                         title='Habiliter comme opérateur'
-                                        size={1}
+                                        size={1.6}
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
                                         onClick={()=>console.log('click')}
                                     />
                                     <Icon
                                         path={mdiAccountCheckOutline}
+                                        className='iconcenter'
                                         title='Habiliter en accès standard'
-                                        size={1}
+                                        size={1.6}
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
                                         onClick={()=>console.log('click')}
@@ -294,7 +299,8 @@ useEffect(()=>{
                                     <span style={{marginTop: -15, color: 'rgba(255,255,255,0.3'}}>_____</span>
                                     <Icon
                                         path={mdiArrowLeftBoldCircle}
-                                        size={1}
+                                        size={1.6}
+                                        className='iconcenter'
                                         title='Ajouter'
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
@@ -302,7 +308,8 @@ useEffect(()=>{
                                     />
                                     <Icon
                                         path={mdiArrowRightBoldCircle}
-                                        size={1}
+                                        size={1.6}
+                                        className='iconcenter'
                                         title='Retirer'
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
@@ -355,16 +362,18 @@ useEffect(()=>{
                                             /> */}
                                             <Icon
                                                 path={mdiDownloadCircleOutline}
+                                                className='iconcenter'
                                                 title='Import .csv'
-                                                size={1}
+                                                size={1.6}
                                                 color={theme.foreground.color}
                                                 style={{ padding: 10, cursor: 'pointer' }}
                                                 onClick={() => console.log('to the right')}
                                             />
                                             <Icon
                                                 path={mdiTrashCanOutline}
+                                                className='iconcenter'
                                                 title='Supprimer'
-                                                size={1}
+                                                size={1.6}
                                                 color={theme.foreground.color}
                                                 style={{ padding: 10, cursor: 'pointer' }}
                                                 onClick={() => console.log('to the right')}
@@ -486,12 +495,10 @@ const styles = {
         width: '100%'
     },
     avatar: {
-        marginRight: 7,
-        height: '20px',
-        width: '20px',
+        marginRight: 10,
+        height: '30px',
+        width: '30px',
         borderRadius: '50%',
-        border: '1px solid white',
-        boxShadow: '1px 3px 5px 1px rgba(0, 0 , 0, 0.4)',
     },
     sideContainer: {
         boxShadow: '1px 2px 10px 2px rgba(0, 0 , 0, 0.4)',

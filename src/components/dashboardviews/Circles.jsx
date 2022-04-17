@@ -61,13 +61,12 @@ const Circles = ({ user }) => {
             const json = await data.json()
 
             if (json.result) {
-                // if(json.clientsWhereUserAdmin) {console.log('*********************************** ', json.clientsWhereUserAdmin)
-                // console.log('*********************************** 2 ', json.clientsWhereUserAdmin[0])
-                // console.log('*********************************** 3 ', json.clientsWhereUserAdmin[0].architectures)
-                // console.log('*********************************** 4 ', json.clientsWhereUserAdmin[0].architectures[0])
-                // }
+                 if(json.clientsWhereUserAdmin) {console.log('*********************************** ', json.clientsWhereUserAdmin)
+                 console.log('*********************************** 2 ', json.clientsWhereUserAdmin[0])
+                 console.log('*********************************** 3 ', json.clientsWhereUserAdmin[0].architectures)
+                 console.log('*********************************** 4 ', json.clientsWhereUserAdmin[0].architectures[0])
+                 }
               
-            console.log(json.result)
                 
                 setClients(json.clientsWhereUserAdmin)
                 setClientSelected(json.clientsWhereUserAdmin[0])
@@ -339,7 +338,7 @@ const architecturesDeploy = (archi, theme, j = 0, orientationParent) => {
         <>
             <div className="hide-scrollbar" style={{ minHeight: '80%', height: '100%', maxHeight: '100%', overflow: 'scroll', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start'}}>
 
-                <div style={{height: '5%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                <div style={{ marginLeft: '1.6%', height: '5%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
                     <div style = {{paddingLeft: '2.7vw', display : 'flex', flex: 1}}>
                     <Select
                     values={ clients.map(client => ({ value: client, label: client.name })) }
@@ -397,8 +396,9 @@ const architecturesDeploy = (archi, theme, j = 0, orientationParent) => {
                         backgroundColor: '#FFF',
                         position : 'absolute',
                         right: 0,
+                        marginTop: '-6%',
                         minWidth: 50,
-                        maxHeight: '79%',
+                        maxHeight: '100%',
                         padding: '10px 10px 10px 20px',
                         borderRadius: 5,                                
                         overflowY: 'auto',
@@ -406,6 +406,7 @@ const architecturesDeploy = (archi, theme, j = 0, orientationParent) => {
                         transition: 'all 0.1 ease-in'
                         }}
                         >
+                    
                     <span style={{position: 'sticky', alignSelf: 'flex-end', top: 5, right: 5, cursor: 'pointer', height: 0}}>
                         <Icon
                             path={mdiClose}
@@ -418,8 +419,9 @@ const architecturesDeploy = (archi, theme, j = 0, orientationParent) => {
                     {showUsers.level &&
                         listOfNamesAndAvatars?.filter(e=>e.id === showUsers.level.circle)[0]?.datas.map((user)=>{
                                 return (
-                                    <div style={{margin: '5px 0px', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-                                       <img style={{borderRadius: '50%', paddingRight: 10, width: 30, height: 30}} src={user.avatar}/> 
+                                    <div id='listusers' style={{margin: '5px 0px', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                                        {/* désarrondir avatar avec div superposé ovale triangulaire */}
+                                        <img style={{borderRadius: '50%', marginRight: 10, width: 30, height: 30}} src={user.avatar}/> 
                                         <span>{user.username}</span>
                                     </div>
                                 )
