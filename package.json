@@ -37,7 +37,7 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "set PORT=3001&& set REACT_APP_ENV=development&& react-dotenv && react-scripts start",
+    "start": "set PORT=3001&& set REACT_APP_ENV=development&& react-dotenv && react-scripts --openssl-legacy-provider start",
     "build": "set REACT_APP_ENV=production&& set CI=&& react-dotenv && react-scripts build",
     "build:test": "set REACT_APP_ENV=test&& react-dotenv && react-scripts build",
     "test": "react-scripts test",

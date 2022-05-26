@@ -396,7 +396,7 @@ const architecturesDeploy = (archi, theme, j = 0, orientationParent) => {
                         backgroundColor: '#FFF',
                         position : 'absolute',
                         right: 0,
-                        marginTop: '-6%',
+                        marginTop: '10%',
                         minWidth: 50,
                         maxHeight: '100%',
                         padding: '10px 10px 10px 20px',

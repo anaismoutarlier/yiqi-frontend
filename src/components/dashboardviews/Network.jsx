@@ -64,7 +64,7 @@ const Network = ({ user }) => {
     const [tabOtherPeople, setTabOtherPeople] = useState([])
     const [tabOtherCircles, setTabOtherCircles] = useState([])
 
-    useEffect(()=>{console.log({tabOtherPeople})}, [tabOtherPeople])
+//    useEffect(()=>{console.log({tabPeopleCircles})}, [tabPeopleCircles])
 
     const [currentSelectionList, setCurrentSelectionList] = useState(null)
 
@@ -123,6 +123,21 @@ useEffect(()=>{
         if(clientSelected) {getAllUsers()}
     }, [clientSelected])
 
+
+//find users of a circle
+    useEffect(()=> {
+        const findCircles = async () => {
+            const data = await fetch(`${global.BACKEND}/users/get-circles/${user._id}`) 
+            const json = await data.json()
+
+            if(json.result) {
+                console.log({circlesFound: json.circlesFound})
+                setTabPeopleCircles(json.circlesFound)
+            }
+        }
+        if(currentSelectionPeople) {findCircles()}
+    }, [currentSelectionPeople])
+
     //FONCTIONS FACTORISEES
 
     // extract circles from selected archi
@@ -151,8 +166,8 @@ useEffect(()=>{
     const deployArchi = (array, theme, j = 0) => {
         return array.map((level, i)=>{
             return <>
-                        <div onClick={()=>{toggleSelectionCircle(level); toggleSelectionPeople(null)}} style={currentSelectionCircle === level ? combineStyles(styles.itemCircleSelected, {backgroundColor: theme.foreground.color}) : styles.itemCircle}>
-                        {Array(10).fill('\xa0').join('').repeat(j) + '· ' + level.name}
+                        <div onClick={()=>{toggleSelectionCircle(level); toggleSelectionPeople(null)}} style={currentSelectionCircle === level ? combineStyles(styles.itemCircleSelected, {width: `${100-(j*10)}%`, backgroundColor: theme.foreground.color}) : combineStyles(styles.itemCircle, {width: `${100-(j*10)}%`})}>
+                        {level.name}
                         </div>
                         {level.children?.length > 0 && deployArchi(level.children, theme, j+1)}                                                   
                     </>
@@ -236,12 +251,12 @@ useEffect(()=>{
                     {/* list IN */}          
                                 <div className={`center${(currentSelectionCircle || currentSelectionPeople) ? '-open' : ''}`} style={combineStyles(theme.background, styles.centerContainer, {justifyContent: 'flex-start', overflow: 'hidden', height: 'calc(100% - 85px)'})}>
                                     <h4 style={{margin: 5, color: '#fff'}}>Inclus</h4>
-                                    <div className="hide-scrollbar" style={{overflowY: 'scroll', borderRadius: 3, width: '90%', height: '100%', maxHeight: '90%', margin: '0px 20px 20px 20px', backgroundColor: '#fff', color: '#333'}}>
+                                    <div className="hide-scrollbar" style={{overflowY: 'scroll', paddingTop: 5, borderRadius: 3, width: '90%', height: '100%', maxHeight: '90%', margin: '0px 20px 20px 20px', backgroundColor: '#fff', color: '#333'}}>
                                         {currentSelectionCircle && 
                                                 
                                                 tabCirclePeople.length > 0 &&
                                                     tabCirclePeople.map((person)=>{
-                                                        return  <div onClick={()=>{setCurrentSelectionList(person)}} style={currentSelectionList === person ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color}) : styles.itemPeople}>
+                                                        return  <div onClick={()=>{setCurrentSelectionList(person)}} style={currentSelectionList === person ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color, margin: '0px 5px', padding: 4}) : combineStyles(styles.itemPeople, {padding: 4, margin: '0px 5px'})}>
                                                                     <img style={styles.avatar} src={person.user.avatar}/>
                                                                     {person.user.username}
                                                                     {person.type === 'operator' ? <Icon path={mdiAccountStarOutline} size={0.8} style={{paddingLeft: 10, cursor: 'pointer'}}/> : person.type === 'admin' ? <Icon path={mdiShieldAccountOutline} size={1} style={{padding: 10, cursor: 'pointer'}}/> : <></>}
@@ -250,12 +265,12 @@ useEffect(()=>{
                                                     })                                           
                                         }
                                         {currentSelectionPeople &&
-                                                tabCirclePeople.map((person)=>{
-                                                    return  <div onClick={()=>{setCurrentSelectionList(person)}} style={currentSelectionList === person ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color}) : styles.itemPeople}>
-                                                                <img style={styles.avatar} src={person.user.avatar}/>
-                                                                {person.user.username}
-                                                                {person.type === 'operator' ? <Icon path={mdiAccountStarOutline} size={0.8} style={{paddingLeft: 10, cursor: 'pointer'}}/> : person.type === 'admin' ? <Icon path={mdiShieldAccountOutline} size={1} style={{padding: 10, cursor: 'pointer'}}/> : <></>}
-                                                            </div>
+                                                tabPeopleCircles.length > 0 &&
+                                                    tabPeopleCircles.map((circle)=>{
+                                                        return  <div onClick={()=>{setCurrentSelectionList(circle)}} style={currentSelectionList === circle ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color, margin: '0px 5px', padding: 4}) : combineStyles(styles.itemPeople, {padding: 4, margin: '0px 5px'})}>
+                                                                    {circle.name}
+                                                                    {circle?.users?.find(el=>el.user === currentSelectionPeople._id)?.type === 'operator' ? <Icon path={mdiAccountStarOutline} size={0.8} style={{paddingLeft: 10, cursor: 'pointer'}}/> : circle?.users?.find(el=>el.user === currentSelectionPeople._id)?.type === 'admin' ? <Icon path={mdiShieldAccountOutline} size={1} style={{padding: 10, cursor: 'pointer'}}/> : <></>}
+                                                                </div>
                                                     
                                                 }) 
 
@@ -320,16 +335,16 @@ useEffect(()=>{
                     {/* list OUT */}
                                 <div className={`center${(currentSelectionCircle || currentSelectionPeople) ? '-open' : ''}`} style={combineStyles(theme.background, styles.centerContainer, {justifyContent: 'flex-start', overflow: 'hidden', height: 'calc(100% - 85px)'})}>
                                     <h4 style={{margin: 5, color: '#fff'}}>Disponible</h4>
-                                    <div className="hide-scrollbar" style={{overflowY: 'scroll', borderRadius: 3, width: '90%', height: '90%', margin: '0px 20px 20px 20px', backgroundColor: '#fff', color: '#333'}}>
+                                    <div className="hide-scrollbar" style={{overflowY: 'scroll', paddingTop: 5, borderRadius: 3, width: '90%', height: '90%', margin: '0px 20px 20px 20px', backgroundColor: '#fff', color: '#333'}}>
                                         {(currentSelectionCircle || currentSelectionPeople) &&
                                                 <>
                                                 {(currentSelectionCircle || currentSelectionPeople) && 
                                                 
                                                 tabOtherPeople?.length > 0 &&
-                                                    tabOtherPeople.map((person)=>{
-                                                        return  <div onClick={()=>{setCurrentSelectionList(person)}} style={currentSelectionList === person ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color}) : styles.itemPeople}>
-                                                                    <img style={styles.avatar} src={person.avatar}/>
-                                                                    {person.username}
+                                                    tabOtherPeople.map((circle)=>{
+                                                        return  <div onClick={()=>{setCurrentSelectionList(circle)}} style={currentSelectionList === circle ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color, padding: 4, margin: '0px 5px'}) : combineStyles(styles.itemPeople, {padding: 4, margin: '0px 5px'})}>
+                                                                    <img style={styles.avatar} src={circle.avatar}/>
+                                                                    {circle.username}
                                                                 </div>                
                                                     })                                                
 
@@ -340,7 +355,7 @@ useEffect(()=>{
                                 </div>
 
 {/* Circles list on the right side */}
-                                <div id="circles-list" className={`hide-scrollbar sides${(currentSelectionCircle || currentSelectionPeople) ? '-open' : ''}`} style={combineStyles(theme.foreground, styles.sideContainer)}>
+                                <div id="circles-list" className={`hide-scrollbar sides${(currentSelectionCircle || currentSelectionPeople) ? '-open' : ''}`} style={combineStyles(theme.foreground, styles.sideContainerCircles)}>
                                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <h4 style={combineStyles(theme.foreground, { margin: 12 })}>Cercles</h4>
                                         <Select
@@ -380,10 +395,11 @@ useEffect(()=>{
                                             />
                                         </div>
                                     </div>
-                                    <div style={{width: '100%', marginBottom: 20, border: '1px solid rgba(0,0,0,0.3'}}></div>
+                                    <div style={{width: '100%', marginBottom: 15, border: '1px solid rgba(0,0,0,0.3'}}></div>
                             {/* circles list */}
-                                    {archiSelected && deployArchi([archiSelected], theme)}  
-
+                                    <div style={{width: '90%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-end', margin: 'auto',}}>
+                                        {archiSelected && deployArchi([archiSelected], theme)}  
+                                    </div>
                                 </div>
                             </div>
 
@@ -405,21 +421,28 @@ export default connect(mapStateToProps, null)(Network);
 
 const styles = {
     itemPeople: {
+        backgroundColor: '#FFF',
+        borderRadius: 5,
         cursor: 'pointer',
         fontWeight: 'normal',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        padding: 3,
+        padding: 10,
         margin: 10,
         transition: 'linear 0.2 ease-in-out'
     },
     itemCircle: {
         cursor: 'pointer',
         fontWeight: 'normal',
+        padding: '13px 10px',
         paddingLeft: 10,
-        margin: 10
+        margin: 5,
+        marginLeft: 10,
+        marginRight: 10,
+        backgroundColor: '#FFF',
+        borderRadius: 5,
     },
     itemPeopleSelected: {
         cursor: 'pointer',
@@ -440,10 +463,12 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        margin: 10,
+        margin: 5,
+        marginLeft: 10,
+        marginRight: 10,
         color: 'rgba(255,255,255,1)',
-        padding: 8,
-        paddingLeft: 12,
+        padding: '13px 10px',
+        paddingLeft: 10,
         borderRadius: 4
     },
     itemPeopleList: {
@@ -477,7 +502,7 @@ const styles = {
         alignItems: 'center',
         borderRadius: 2,
         backgroundColor: 'rgba(0,0,0,0.2)',
-        padding: 8,
+        padding: 3,
         color: 'rgba(0,0,0,0.7)',
         width: '100%'
     },
@@ -489,7 +514,7 @@ const styles = {
         justifyContent: 'flex-start',
         alignItems: 'center',
         borderRadius: 2,
-        padding: 8,
+        padding: 3,
         backgroundColor: 'rgba(0,0,0,0.2)',
         color: 'rgba(0,0,0,0.7)',
         width: '100%'
@@ -501,9 +526,20 @@ const styles = {
         borderRadius: '50%',
     },
     sideContainer: {
-        boxShadow: '1px 2px 10px 2px rgba(0, 0 , 0, 0.4)',
+    //    boxShadow: '1px 2px 10px 2px rgba(0, 0 , 0, 0.4)',
         height: '100%',
-        borderRadius: 2,
+        borderRadius: 4,
+        padding: 10,
+        margin: 10,
+        backgroundColor: 'rgba(0,0,0,0.05)',
+        flexWrap: 'wrap',
+        overflow: 'scroll',
+        boxSizing: 'border-box'
+    },
+    sideContainerCircles: {
+    //    boxShadow: '1px 2px 10px 2px rgba(0, 0 , 0, 0.4)',
+        height: '100%',
+        borderRadius: 4,
         padding: 10,
         margin: 10,
         backgroundColor: 'rgba(0,0,0,0.05)',

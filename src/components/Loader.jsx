@@ -25,7 +25,7 @@ function Loader() {
     //EFFECT HOOKS______________________
     useEffect(() => {
         const fetchUser = async () => {
-            console.log(global.BACKEND)
+        //    console.log(global.BACKEND)
             const data = await fetch(`${global.BACKEND}/users/account`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

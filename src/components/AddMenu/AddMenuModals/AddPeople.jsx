@@ -172,12 +172,12 @@ const AddPeople = ({ toggleModal }) => {
 
     useEffect(() => {
         setSpheresListState(spheresList)
-        console.log('spheresListState : ', spheresListState)
+//        console.log('spheresListState : ', spheresListState)
     }, [])
 
     useEffect(() => {
         setPeopleListState(peopleList)
-        console.log('peopleListState : ', peopleListState)
+//        console.log('peopleListState : ', peopleListState)
     }, [])
 
     useEffect(() => {
@@ -195,10 +195,10 @@ const AddPeople = ({ toggleModal }) => {
     }, [])
 
     const addMail = () => {
-        console.log('PEOPLELISTR BEFORE : ', listNewPeople)
+//        console.log('PEOPLELISTR BEFORE : ', listNewPeople)
         let arrCopy = [...listNewPeople];
         arrCopy.push(emailNew);
-        console.log('PEOPLELISTR AFTER : ', arrCopy)
+//        console.log('PEOPLELISTR AFTER : ', arrCopy)
         setListNewPeople(arrCopy)
         setEmailNew('')
 

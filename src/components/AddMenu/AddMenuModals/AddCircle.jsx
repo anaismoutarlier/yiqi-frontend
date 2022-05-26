@@ -156,11 +156,11 @@ const AddCircle = ({ toggleModal }) => {
 
     useEffect(()=>{
         setCirclesListState(circlesList)
-        console.log('circlesListState : ', circlesListState)
+    //    console.log('circlesListState : ', circlesListState)
     }, [])
     useEffect(()=>{
         setPeopleListState(peopleList)
-        console.log('peopleListState : ', peopleListState)
+    //    console.log('peopleListState : ', peopleListState)
     }, [])
 
             useEffect(()=>{
@@ -183,9 +183,9 @@ const AddCircle = ({ toggleModal }) => {
     const [orientation, setOrientation] = useState('')
     const [impossible, setImpossible] = useState([])
 
-    useEffect(()=>{console.log('intitule : ', intitule)}, [intitule])
-    useEffect(()=>{console.log('parent : ', parent)}, [parent])
-    useEffect(()=>{console.log('orientation : ', orientation)}, [orientation])
+//    useEffect(()=>{console.log('intitule : ', intitule)}, [intitule])
+//    useEffect(()=>{console.log('parent : ', parent)}, [parent])
+//    useEffect(()=>{console.log('orientation : ', orientation)}, [orientation])
 
     const createCircle = () => {
         let arrCopy = [...circlesListState]
@@ -193,7 +193,7 @@ const AddCircle = ({ toggleModal }) => {
         arrCopy.push({name: intitule, parent: parent ? parent : null, orientation: orientation, status: 'Active', rank: circlesListState.find(e=>e.name === parent) ? circlesListState.find(e=>e.name === parent).rank <=5 && circlesListState.find(e=>e.name === parent).rank + 1 : 1})
         setCirclesListState(arrCopy)
         toggleModal()
-        console.log(arrCopy)
+//        console.log(arrCopy)
     }
     }
 

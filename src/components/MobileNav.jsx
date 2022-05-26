@@ -34,7 +34,7 @@ const MobileNav = () => {
 
     //FUNCTIONS____________________
     const logout = () => {
-        console.log("logout")
+    //    console.log("logout")
         cookies.remove('token')
         dispatch({ type: "logoutUser" })
     }
