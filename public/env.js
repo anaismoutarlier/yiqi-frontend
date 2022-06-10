@@ -1,7 +1,7 @@
 window.env = {
   "ALLUSERSPROFILE": "C:\\ProgramData",
   "APPDATA": "C:\\Users\\quent\\AppData\\Roaming",
-  "CHROME_CRASHPAD_PIPE_NAME": "\\\\.\\pipe\\crashpad_14804_SQXFCWSTVRYWOBSU",
+  "CHROME_CRASHPAD_PIPE_NAME": "\\\\.\\pipe\\crashpad_30104_LYVEBWHQGKHYOSRH",
   "COLOR": "1",
   "COLORTERM": "truecolor",
   "CommonProgramFiles": "C:\\Program Files\\Common Files",
@@ -32,6 +32,7 @@ window.env = {
   "npm_config_init_module": "C:\\Users\\quent\\.npm-init.js",
   "npm_config_local_prefix": "C:\\Users\\quent\\Desktop\\Babble\\front",
   "npm_config_metrics_registry": "https://registry.npmjs.org/",
+  "npm_config_msvs_version": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise",
   "npm_config_node_gyp": "C:\\Users\\quent\\AppData\\Roaming\\nvm\\v18.2.0\\node_modules\\npm\\node_modules\\node-gyp\\bin\\node-gyp.js",
   "npm_config_noproxy": "",
   "npm_config_prefix": "C:\\Program Files\\nodejs",
