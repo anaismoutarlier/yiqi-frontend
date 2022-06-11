@@ -66,9 +66,10 @@ const Network = ({ user }) => {
     const [tabOtherPeople, setTabOtherPeople] = useState([])
     const [tabOtherCircles, setTabOtherCircles] = useState([])
 
-//    useEffect(()=>{console.log({tabPeopleCircles})}, [tabPeopleCircles])
 
     const [currentSelectionList, setCurrentSelectionList] = useState(null)
+
+    useEffect(()=>{console.log({currentSelectionList})}, [currentSelectionList])
 
 
     // fetch clients where user is admin / and architectures of the clients
@@ -196,6 +197,32 @@ useEffect(()=>{
     const toggleSelectionCircle = (id) => currentSelectionCircle === id ? (setcurrentSelectionCircle(null), setTabCirclePeople([]), setTabOtherPeople([]), setCurrentSelectionList(null)) : (setcurrentSelectionCircle(id), setTabPeopleCircles([]), setTabOtherCircles([]), setCurrentSelectionList(null))
     const toggleSelectionPeople = (id) => currentSelectionPeople === id ? (setCurrentSelectionPeople(null), setTabPeopleCircles([]), setTabOtherCircles([]), setCurrentSelectionList(null)) : (setCurrentSelectionPeople(id), setTabCirclePeople([]), setTabOtherPeople([]), setCurrentSelectionList(null))
 
+
+    //habilitation of user
+    const giveHabilitation = (hab, userId, circleId) => {
+        console.log({hab, userId, circleId})
+
+        //fonction fetch
+        const fetchHabilitation = async () => {
+            const data = await fetch(`${global.BACKEND}/circles/habilitate/${hab}/${userId}/${circleId}`)
+            const json = await data.json()
+
+            if (json.result) {
+                console.log({result: json.newHab})
+            }
+        }
+
+            fetchHabilitation()
+        
+    }
+
+    //put in and put out
+    const transferItem = (sens, itemType, itemId) => {
+        if(currentSelectionList.type) {console.log('person selected : ', currentSelectionList._id)}
+        if(currentSelectionList.circle) {console.log('circle selected : ', currentSelectionList.circle)}
+        console.log({sens, itemType, itemId})
+    }
+
     return (
         <>
             {/* <TransferList users={users} clients={clients} architectures={architectures} clientSelected={clientSelected} archiSelected={archiSelected} circlesOfSelectedArchi={circlesOfSelectedArchi} /> */}
@@ -274,7 +301,7 @@ useEffect(()=>{
                                                         return  <div onClick={()=>{setCurrentSelectionList(person)}} style={currentSelectionList === person ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color, margin: '0px 5px', padding: 4}) : combineStyles(styles.itemPeople, {padding: 4, margin: '0px 5px'})}>
                                                                     <img style={styles.avatar} src={person.user.avatar}/>
                                                                     {person.user.username}
-                                                                    {person.type === 'operator' ? <Icon path={mdiAccountStarOutline} size={1.2} style={{paddingLeft: 10, cursor: 'pointer'}}/> : person.type === 'admin' ? <Icon path={mdiShieldAccountOutline} size={1.5} style={{padding: 10, cursor: 'pointer'}}/> : <></>}
+                                                                    {person.type === 'operator' ? <Icon path={mdiAccountStarOutline} size={1} style={{padding: 0, paddingLeft: 10, cursor: 'pointer', color: currentSelectionList === person ? '#FFF' : theme.foreground.color}}/> : person.type === 'admin' ? <Icon path={mdiShieldAccountOutline} size={1} style={{padding: 0, paddingLeft: 10, cursor: 'pointer', color: currentSelectionList === person ? '#FFF' : theme.foreground.color}}/> : <></>}
                                                                 </div>
                                                         
                                                     })                                           
@@ -282,9 +309,10 @@ useEffect(()=>{
                                         {currentSelectionPeople &&
                                                 tabPeopleCircles.length > 0 &&
                                                     tabPeopleCircles.map((circle)=>{
-                                                        return  <div onClick={()=>{setCurrentSelectionList(circle)}} style={currentSelectionList === circle ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color, margin: `0px 5px 0px ${circle.depth*30+5}px`, padding: 4}) : combineStyles(styles.itemPeople, {padding: 4, margin: `0px 5px 0px ${circle.depth*30+5}px`})}>
+                                                        return  <div onClick={()=>{setCurrentSelectionList(circle)}} style={currentSelectionList === circle ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color, margin: `0px 10px 0px 10px`, padding: 4}) : combineStyles(styles.itemPeople, {padding: 4, margin: `0px 10px 0px 10px`})}>
+                                                                    <span style={{width: `${circle.depth*40+5 === 5 ? 0 : circle.depth*40+5}px`, borderBottom: '1px solid #DDD', marginRight: circle.depth*40+5 === 5 ? 0 : 10}}></span>
                                                                     {circle.name}
-                                                                    {circlesFoundForUser.find(e=>e._id === circle.circle)?.users.find(f=>f.user === currentSelectionPeople._id)?.type === 'operator' ? <Icon path={mdiAccountStarOutline} size={1.2} style={{paddingLeft: 10, cursor: 'pointer'}}/> : circlesFoundForUser.find(e=>e._id === circle.circle)?.users.find(f=>f.user === currentSelectionPeople._id)?.type === 'admin' ? <Icon path={mdiShieldAccountOutline} size={1.5} style={{padding: 10, cursor: 'pointer'}}/> : <></>}
+                                                                    {circlesFoundForUser.find(e=>e._id === circle.circle)?.users.find(f=>f.user === currentSelectionPeople._id)?.type === 'operator' ? <Icon path={mdiAccountStarOutline} size={1} style={{padding: 0, paddingLeft: 10, cursor: 'pointer', color: currentSelectionList === circle ? '#FFF' : theme.foreground.color}}/> : circlesFoundForUser.find(e=>e._id === circle.circle)?.users.find(f=>f.user === currentSelectionPeople._id)?.type === 'admin' ? <Icon path={mdiShieldAccountOutline} size={1} style={{padding: 0, paddingLeft: 10, cursor: 'pointer', color: currentSelectionList === circle ? '#FFF' : theme.foreground.color}}/> : <></>}
                                                                 </div>
                                                     
                                                 }) 
@@ -306,7 +334,7 @@ useEffect(()=>{
                                         size={1.6}
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
-                                        onClick={()=>console.log('click')}
+                                        onClick={()=>giveHabilitation('admin', currentSelectionList.type ? currentSelectionList._id : currentSelectionPeople._id, currentSelectionList.type ? currentSelectionCircle.circle : currentSelectionList.circle)}
                                     />
                                     <Icon
                                         path={mdiAccountStarOutline}
@@ -315,7 +343,7 @@ useEffect(()=>{
                                         size={1.6}
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
-                                        onClick={()=>console.log('click')}
+                                        onClick={()=>giveHabilitation('operator', currentSelectionList.type ? currentSelectionList._id : currentSelectionPeople._id, currentSelectionList.type ? currentSelectionCircle.circle : currentSelectionList.circle)}
                                     />
                                     <Icon
                                         path={mdiAccountCheckOutline}
@@ -324,7 +352,7 @@ useEffect(()=>{
                                         size={1.6}
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
-                                        onClick={()=>console.log('click')}
+                                        onClick={()=>giveHabilitation('access', currentSelectionList.type ? currentSelectionList._id : currentSelectionPeople._id, currentSelectionList.type ? currentSelectionCircle.circle : currentSelectionList.circle)}
                                     />
                                     <span style={{marginTop: -15, color: 'rgba(255,255,255,0.3'}}>_____</span>
                                     <Icon
@@ -363,10 +391,10 @@ useEffect(()=>{
                                                 }
                                                 {setCurrentSelectionPeople && tabOtherCircles?.length > 0 &&
                                                     tabOtherCircles.map((circle)=>{
-                                                        return  <div onClick={()=>{setCurrentSelectionList(circle)}} style={currentSelectionList === circle ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color, margin: `0px 5px 0px ${circle.depth*30+5}px`, padding: 4}) : combineStyles(styles.itemPeople, {padding: 4, margin: `0px 5px 0px ${circle.depth*30+5}px`})}>
-                                                        {circle.name}
-                                                        {circle?.users?.find(el=>el.user === currentSelectionPeople._id)?.type === 'operator' ? <Icon path={mdiAccountStarOutline} size={0.8} style={{paddingLeft: 10, cursor: 'pointer'}}/> : circle?.users?.find(el=>el.user === currentSelectionPeople._id)?.type === 'admin' ? <Icon path={mdiShieldAccountOutline} size={1} style={{padding: 10, cursor: 'pointer'}}/> : <></>}
-                                                    </div>           
+                                                        return  <div onClick={()=>{setCurrentSelectionList(circle)}} style={currentSelectionList === circle ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color, margin: `0px 10px 0px 10px`, padding: 4}) : combineStyles(styles.itemPeople, {padding: 4, margin: `0px 10px 0px 10px`})}>
+                                                                    <span style={{width: `${circle.depth*40+5 === 5 ? 0 : circle.depth*40+5}px`, borderBottom: '1px solid #DDD', marginRight: circle.depth*40+5 === 5 ? 0 : 10}}></span>
+                                                                    {circle.name}
+                                                                </div>           
                                                 }) 
                                                     
 
