@@ -1,7 +1,7 @@
 window.env = {
   "ALLUSERSPROFILE": "C:\\ProgramData",
   "APPDATA": "C:\\Users\\quent\\AppData\\Roaming",
-  "CHROME_CRASHPAD_PIPE_NAME": "\\\\.\\pipe\\crashpad_30104_LYVEBWHQGKHYOSRH",
+  "CHROME_CRASHPAD_PIPE_NAME": "\\\\.\\pipe\\crashpad_19508_UNXZOADGPFYJBDQP",
   "COLOR": "1",
   "COLORTERM": "truecolor",
   "CommonProgramFiles": "C:\\Program Files\\Common Files",
@@ -78,7 +78,7 @@ window.env = {
   "SystemRoot": "C:\\windows",
   "TEMP": "C:\\Users\\quent\\AppData\\Local\\Temp",
   "TERM_PROGRAM": "vscode",
-  "TERM_PROGRAM_VERSION": "1.67.2",
+  "TERM_PROGRAM_VERSION": "1.68.0",
   "TMP": "C:\\Users\\quent\\AppData\\Local\\Temp",
   "USERDOMAIN": "LAPTOP-EVTKHGFH",
   "USERDOMAIN_ROAMINGPROFILE": "LAPTOP-EVTKHGFH",

@@ -66,11 +66,49 @@ const Network = ({ user }) => {
     const [tabOtherPeople, setTabOtherPeople] = useState([])
     const [tabOtherCircles, setTabOtherCircles] = useState([])
 
+    const [refresh, setRefresh] = useState(false)
 
     const [currentSelectionList, setCurrentSelectionList] = useState(null)
 
     useEffect(()=>{console.log({currentSelectionList})}, [currentSelectionList])
 
+        //habilitation of user
+        const giveHabilitation = (hab, userId, circleId) => {
+            console.log({hab, userId, circleId})
+    
+            //fonction fetch back
+            const fetchHabilitation = async () => {
+                const data = await fetch(`${global.BACKEND}/circles/habilitate/${hab}/${userId}/${circleId}`)
+                const json = await data.json()
+    
+                if (json.result) {
+                    console.log({result: json.newHab})
+                }
+            setRefresh(!refresh)
+            }
+    
+                fetchHabilitation()
+        }
+    
+           //put in and put out
+        const transferItem = (userId, circleId) => {
+            if(currentSelectionCircle) {console.log('person selected : ', currentSelectionList._id)}
+            if(currentSelectionPeople) {console.log('circle selected : ', currentSelectionList.circle)}
+            console.log({userId, circleId})
+
+                        //fonction fetch back
+                        const addOrRemovePeopleInCircle = async () => {
+                            const data = await fetch(`${global.BACKEND}/circles/manage/${userId}/${circleId}`)
+                            const json = await data.json()
+                
+                            if (json.result) {
+                                console.log({result: json.newCircle})
+                            }
+                        setRefresh(!refresh)
+                        }
+                
+                        addOrRemovePeopleInCircle()
+        }
 
     // fetch clients where user is admin / and architectures of the clients
     useEffect(() => {
@@ -106,7 +144,24 @@ const Network = ({ user }) => {
         }
         if (currentSelectionCircle) {fetchUsers()}
 
-    }, [currentSelectionCircle])
+    }, [currentSelectionCircle, refresh])
+
+//find users of a circle
+useEffect(()=> {
+    const findCircles = async (id) => {
+        const data = await fetch(`${global.BACKEND}/users/get-circles/${id}`) 
+        const json = await data.json()
+
+        if(json.result) {
+            console.log({circlesFound: json.circlesFound})
+            setCirclesFoundForUser(json.circlesFound)
+            let temp = circlesOfSelectedArchi.filter(e=>json.circlesFound.find(f=>f._id === e.circle))
+            console.log({temp})
+            setTabPeopleCircles(temp)
+        }
+    }
+    if(currentSelectionPeople) {findCircles(currentSelectionPeople._id)}
+}, [currentSelectionPeople, refresh])
 
     //set tabOtherPeople
 useEffect(()=>{
@@ -136,23 +191,6 @@ useEffect(()=>{
         if(clientSelected) {getAllUsers()}
     }, [clientSelected])
 
-
-//find users of a circle
-    useEffect(()=> {
-        const findCircles = async (id) => {
-            const data = await fetch(`${global.BACKEND}/users/get-circles/${id}`) 
-            const json = await data.json()
-
-            if(json.result) {
-                console.log({circlesFound: json.circlesFound})
-                setCirclesFoundForUser(json.circlesFound)
-                let temp = circlesOfSelectedArchi.filter(e=>json.circlesFound.find(f=>f._id === e.circle))
-                console.log({temp})
-                setTabPeopleCircles(temp)
-            }
-        }
-        if(currentSelectionPeople) {findCircles(currentSelectionPeople._id)}
-    }, [currentSelectionPeople])
 
     //FONCTIONS FACTORISEES
 
@@ -198,30 +236,7 @@ useEffect(()=>{
     const toggleSelectionPeople = (id) => currentSelectionPeople === id ? (setCurrentSelectionPeople(null), setTabPeopleCircles([]), setTabOtherCircles([]), setCurrentSelectionList(null)) : (setCurrentSelectionPeople(id), setTabCirclePeople([]), setTabOtherPeople([]), setCurrentSelectionList(null))
 
 
-    //habilitation of user
-    const giveHabilitation = (hab, userId, circleId) => {
-        console.log({hab, userId, circleId})
-
-        //fonction fetch
-        const fetchHabilitation = async () => {
-            const data = await fetch(`${global.BACKEND}/circles/habilitate/${hab}/${userId}/${circleId}`)
-            const json = await data.json()
-
-            if (json.result) {
-                console.log({result: json.newHab})
-            }
-        }
-
-            fetchHabilitation()
-        
-    }
-
-    //put in and put out
-    const transferItem = (sens, itemType, itemId) => {
-        if(currentSelectionList.type) {console.log('person selected : ', currentSelectionList._id)}
-        if(currentSelectionList.circle) {console.log('circle selected : ', currentSelectionList.circle)}
-        console.log({sens, itemType, itemId})
-    }
+ 
 
     return (
         <>
@@ -297,7 +312,7 @@ useEffect(()=>{
                                         {currentSelectionCircle && 
                                                 
                                                 tabCirclePeople.length > 0 &&
-                                                    tabCirclePeople.map((person)=>{console.log({person})
+                                                    tabCirclePeople.map((person)=>{
                                                         return  <div onClick={()=>{setCurrentSelectionList(person)}} style={currentSelectionList === person ? combineStyles(styles.itemPeopleSelected, {backgroundColor: theme.foreground.color, margin: '0px 5px', padding: 4}) : combineStyles(styles.itemPeople, {padding: 4, margin: '0px 5px'})}>
                                                                     <img style={styles.avatar} src={person.user.avatar}/>
                                                                     {person.user.username}
@@ -334,7 +349,7 @@ useEffect(()=>{
                                         size={1.6}
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
-                                        onClick={()=>giveHabilitation('admin', currentSelectionList.type ? currentSelectionList._id : currentSelectionPeople._id, currentSelectionList.type ? currentSelectionCircle.circle : currentSelectionList.circle)}
+                                        onClick={()=>giveHabilitation('admin', currentSelectionPeople ? currentSelectionPeople._id : currentSelectionList.user._id, currentSelectionPeople ? currentSelectionList.circle : currentSelectionCircle.circle)}
                                     />
                                     <Icon
                                         path={mdiAccountStarOutline}
@@ -343,7 +358,7 @@ useEffect(()=>{
                                         size={1.6}
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
-                                        onClick={()=>giveHabilitation('operator', currentSelectionList.type ? currentSelectionList._id : currentSelectionPeople._id, currentSelectionList.type ? currentSelectionCircle.circle : currentSelectionList.circle)}
+                                        onClick={()=>giveHabilitation('operator', currentSelectionPeople ? currentSelectionPeople._id : currentSelectionList.user._id, currentSelectionPeople ? currentSelectionList.circle : currentSelectionCircle.circle)}
                                     />
                                     <Icon
                                         path={mdiAccountCheckOutline}
@@ -352,7 +367,7 @@ useEffect(()=>{
                                         size={1.6}
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
-                                        onClick={()=>giveHabilitation('access', currentSelectionList.type ? currentSelectionList._id : currentSelectionPeople._id, currentSelectionList.type ? currentSelectionCircle.circle : currentSelectionList.circle)}
+                                        onClick={()=>giveHabilitation('access', currentSelectionPeople ? currentSelectionPeople._id : currentSelectionList.user._id, currentSelectionPeople ? currentSelectionList.circle : currentSelectionCircle.circle)}
                                     />
                                     <span style={{marginTop: -15, color: 'rgba(255,255,255,0.3'}}>_____</span>
                                     <Icon
@@ -362,7 +377,7 @@ useEffect(()=>{
                                         title='Ajouter'
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
-                                        onClick={()=>{currentSelectionCircle ? console.log('click') : console.log('click')}}
+                                        onClick={()=>{transferItem(currentSelectionPeople ? currentSelectionPeople._id : currentSelectionList.user ? currentSelectionList.user._id : currentSelectionList._id, currentSelectionPeople ? currentSelectionList.circle : currentSelectionCircle.circle)}}
                                     />
                                     <Icon
                                         path={mdiArrowRightBoldCircle}
@@ -371,7 +386,7 @@ useEffect(()=>{
                                         title='Retirer'
                                         color="white"
                                         style={{padding: 10, cursor: 'pointer'}}
-                                        onClick={()=>{currentSelectionCircle ? console.log('click') : console.log('click')}}
+                                        onClick={()=>{transferItem(currentSelectionPeople ? currentSelectionPeople._id : currentSelectionList.user ? currentSelectionList.user._id : currentSelectionList._id, currentSelectionPeople ? currentSelectionList.circle : currentSelectionCircle.circle)}}
                                     />
                             </div>
                         </div>
